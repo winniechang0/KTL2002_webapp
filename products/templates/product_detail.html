@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block body %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">List of Products</a></li>
+    <li class="breadcrumb-item active" aria-current="page">
+      {{ product.title }}
+    </li>
+  </ol>
+</nav>
+<div class="container mt-2">
+  <h1>{{ product.title }}</h1>
+  <hr />
+  <p>{{ product.value }}</p>
+</div>
+{% endblock %}
