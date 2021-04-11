@@ -1,0 +1,39 @@
+{% block body %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">KTL 2002</a>
+
+
+            {% if user.is_authenticated %}
+            <div style="display:flex">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-light">Manage offer item</button>&nbsp;
+                    <button type="button" class="btn btn-light" onClick="location.href='/add/'">Add an offer item</button>
+                </div>
+                &nbsp;
+                <div style="display:flex" class="dropdown">
+                    <div style="height:40px;width:40px;background:grey;border-radius: 100px;"></div>
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href='/logout/'>logout</a>
+                    </div>
+                </div>
+    
+            </div>
+            {% else %}
+            <div style="display:flex">
+                <button class="btn btn-outline-light g-2" onclick="location.href='/login/'">Login</button>
+                <button class="btn btn-outline-light g-2" onclick="location.href='/signup/'">Signup</button>
+            </div>
+            {% endif %}
+    
+            <!-- <button class="btn btn-light my-2 my-sm-0">Manage offer item</button>
+            <button class="btn btn-light my-2 my-sm-0">Add an offer item</button> -->
+    
+        </div>
+    </nav>
+{% endblock %}

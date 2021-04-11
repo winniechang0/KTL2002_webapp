@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block body %}
+<form class="container card-body">
+    
+    <div class="form-group">
+        <!--image upload-->
+
+        <div class="ml-2 col-sm-6">
+            <div id="msg"></div>
+            <form method="post" id="image-form">
+                <input type="file" name="img[]" class="file" accept="image/*">
+                <div class="input-group my-3">
+                    <input type="text" class="form-control" disabled placeholder="Upload File" id="file">
+                    <div class="input-group-append">
+                        <button type="button" class="browse btn btn-primary">Browse...</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!--add offer item form-->
+        <div class="form-group">
+            <label for="category">Category</label><br />
+            <select id="category" name="category">
+                <option value="option1">option1</option>
+                <option value="option2">option2</option>
+                <option value="option3">option3</option>
+                <option value="option4">option4</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="offername">Name of offer item</label>
+            <input class="form-control" id="inputEmail" placeholder="Name of offer item">
+        </div>
+
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input class="form-control" id="price" placeholder="Price">
+        </div>
+        
+        <div class="form-group">
+            <label for="used">Used item</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="yes">
+                <label class="form-check-label" for="yes">
+                    Yes
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="no">
+                <label class="form-check-label" for="no">
+                    No
+                </label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Add an offer item</button>
+    </div>
+    
+</form>
+{% endblock %}

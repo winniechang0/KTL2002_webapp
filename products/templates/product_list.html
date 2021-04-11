@@ -1,22 +1,25 @@
-{% extends 'base.html' %}
-{% block body %}
-<div class="container mt-5">
-  <h1>List of Products</h1>
-  <div class="row">
-    {% for product in object_list %}
 
-    <div class="col-md-6">
-      <div class="card my-3">
-        <div class="card-body">
-          <h5 class="card-title">{{ product.title }}</h5>
-          <p class="card-text text-muted">
-            {{ product.value }}
-          </p>
-          <a href="/{{ product.id }}" class="card-link">More</a>
-        </div>
+{% block body %}
+<h1>Welcome, {{user.username}}</h1>
+<!--search bar-->
+<!-- <form>
+  <div class="container mt-5 searchbar" style="display:flex">
+    <form action="{% url 'search_result' %}" method="GET" >
+      <div class="col">
+        <input class="form-control form-control-lg form-control-borderless " type="search" placeholder="Search products"
+          style="min-height:100px" name="query" type="text">
       </div>
-    </div>
-    {% endfor %}
+      <div class="col-auto">
+        
+        <button class="btn btn-lg btn-primary" type="submit" style="min-height:100px" name="button" >Search</button>
+      </div>
+    </form>
   </div>
-</div>
+</form> -->
+
+<form action="{% url 'search_result' %}" method="get">
+  <input name="query" type="text" placeholder="Search here..">
+  <button type="submit" name="button">Submit</button>
+</form>
+
 {% endblock %}
