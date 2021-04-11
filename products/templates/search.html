@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<h1> Search result of {{srh}}</h1>
+<h1> Search result of {{search}}</h1>
 <ul>
     {% for result in products %}
     <div style="width:250px; display: inline-block; padding:5px; margin:5px" class="border rounded">
@@ -10,6 +10,7 @@
         <div><b>{{result.Offer_key.Product_title}}</b></div>
         <!-- {{result.Product_image}} -->
         <img src="{{result.Offer_key.Product_image}}" width="200px"/>
+       
     </div>
     {% endfor %}
 </ul>

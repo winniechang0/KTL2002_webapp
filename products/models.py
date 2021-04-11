@@ -43,4 +43,18 @@ class Offer(models.Model):
     # Offer_date = models.DateField()
     Offer_cat = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
 
+class Likes(models.Model):
+    User = models.ForeignKey(User,on_delete=models.CASCADE)
+    Like = models.IntegerField(default=0)
+    Like_date = models.DateField()
+    Offer = models.ForeignKey(Offer, on_delete=models.CASCADE)
+
+class ProductAssociation_matrix(models.Model):
+    Src_Product_Cat = models.ForeignKey(ProductCategory,on_delete=models.CASCADE , related_name="Src_Product_Cat")
+    Dest_Product_Cat = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, related_name="Dest_Product_Cat")
+    value = models.FloatField(default=0)
+
+
+
+
 

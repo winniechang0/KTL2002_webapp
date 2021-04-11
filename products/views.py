@@ -3,8 +3,8 @@ from .models import *
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import logout as auth_logout
 
-# csv_filepathname="C:/Users/winni/Downloads/1_percent_data.csv"
-csv_filepathname="txt/names_and_img2.csv"
+csv_filepathname="txt/Product_association_matrix.csv"
+# csv_filepathname="txt/names_and_img2.csv"
 
 import re
 import csv
@@ -93,6 +93,19 @@ def AddOfferView(request):
     #     a = ProductInfo.objects.get(Product_asin=row[0])
     #     a.Product_category_name = ProductCategory.objects.get(product_category_name=row[3])
     #     a.save()
+    dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'), delimiter=',', quotechar='"')
+    i= 4122
+    for row in dataReader:
+        for j in range(4122,4149):
+            print('hihihi', row[j-4122])
+            a = ProductAssociation_matrix()
+            a.Src_Product_Cat = ProductCategory.objects.get(id=i)
+            a.Dest_Product_Cat = ProductCategory.objects.get(id=j)
+            a.value = row[j-4122]
+            a.save()
+        i+=1
+
+
     print('finish')
 
 
@@ -118,6 +131,8 @@ def SearchPage(request):
     for each in products:
         print(each)
     offer = Offer.objects.filter(Offer_asin__in = products)
+    # like  = Likes.objects.filter(User = request.user).values_list('Offer',flat=True)
+
     for each in offer:
         print('============',each.Offer_key.Product_title, each.Offer_asin)
     print('===================================================================')
