@@ -54,6 +54,10 @@ class ProductAssociation_matrix(models.Model):
     Dest_Product_Cat = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, related_name="Dest_Product_Cat")
     value = models.FloatField(default=0)
 
+class CustomerPreference_model(models.Model):
+    User = models.ForeignKey(User, on_delete=models.CASCADE)
+    ProductCategory = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
+    value = models.FloatField(default=0)
 
 
 

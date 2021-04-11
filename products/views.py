@@ -3,7 +3,7 @@ from .models import *
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import logout as auth_logout
 
-csv_filepathname="txt/Product_association_matrix.csv"
+csv_filepathname="txt/Customer_preference_model.csv"
 # csv_filepathname="txt/names_and_img2.csv"
 
 import re
@@ -93,19 +93,35 @@ def AddOfferView(request):
     #     a = ProductInfo.objects.get(Product_asin=row[0])
     #     a.Product_category_name = ProductCategory.objects.get(product_category_name=row[3])
     #     a.save()
-    dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'), delimiter=',', quotechar='"')
-    i= 4122
-    for row in dataReader:
-        for j in range(4122,4149):
-            print('hihihi', row[j-4122])
-            a = ProductAssociation_matrix()
-            a.Src_Product_Cat = ProductCategory.objects.get(id=i)
-            a.Dest_Product_Cat = ProductCategory.objects.get(id=j)
-            a.value = row[j-4122]
-            a.save()
-        i+=1
-
-
+    # dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'), delimiter=',', quotechar='"')
+    # for row in dataReader:
+    #     user = User.objects.get(username=row[0])
+    #     for i in range(4122, 4149):
+    #         a = CustomerPreference_model()
+    #         a.User = user
+    #         a.ProductCategory = ProductCategory.objects.get(id=i)
+    #         a.value = row[i-4122+1]
+    #         a.save()
+    # i= 4122
+    # for row in dataReader:
+    #     for j in range(4122,4149):
+    #         print('hihihi', row[j-4122])
+    #         a = ProductAssociation_matrix()
+    #         a.Src_Product_Cat = ProductCategory.objects.get(id=i)
+    #         a.Dest_Product_Cat = ProductCategory.objects.get(id=j)
+    #         a.value = row[j-4122]
+    #         a.save()
+    #     i+=1
+        
+    locaion_list = Station.objects.all()
+    for i in range(1,12088):
+        try:
+            user = User.objects.get(id=i)
+            user.last_name = random.choice(locaion_list).station_id
+            user.save()
+            
+        except User.DoesNotExist:
+            print('User Not Exist')
     print('finish')
 
 
