@@ -11,9 +11,23 @@
         <div><b>{{result.Offer_key.Product_title}}</b></div>
         <!-- {{result.Product_image}} -->
         <img src="{{result.Offer_key.Product_image}}" width="200px"/>
-       
+        <button class="btn btn-primary" onclick="AjaxFormSubmit()" href="#" id="{{ forloop.counter }}">Like</button>
     </div>
     {% endfor %}
 </ul>
+<script>
+   function AjaxFormSubmit(id,offer_id,user) {
+        $.ajax({
+            // url: '/event/{{ event.id }}/',
+            type: "POST",
+            data: { offer_id: offer_id, user:user }
+        }).done(function (returned_data) {
+            document.getElementById(id).className = "btn btn-secondary"
+            document.getElementById(id).innerText = Liked
+            
+
+        });
+    } 
+</script>
 
 {% endblock %}

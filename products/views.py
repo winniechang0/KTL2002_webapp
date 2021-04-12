@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import *
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import authenticate, login
 
 csv_filepathname="txt/preference_matrix.csv"
 # csv_filepathname="txt/names_and_img2.csv"
@@ -58,7 +59,20 @@ def AddOfferView(request):
 
 
 def LoginView(request):
-    return render(request, 'login.html')
+    try:
+        print('------------------------------------------------------')
+        username=request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request,user)
+            return redirect('HomeView')
+        else:
+            print('fail')
+            return render(request, 'login.html')
+    except:
+        print('123------------------------------------------------------')
+        return render(request, 'login.html')
 
 def SignUpView(request):
     return render(request, 'signup.html')
@@ -81,5 +95,9 @@ def SearchPage(request):
     for each in offer:
         print('============',each.Offer_key.Product_title, each.Offer_asin)
     print('===================================================================')
-    params = {'products':offer, 'search':srh}
+    location_sort = Fares.objects.filter(src_station_id=request.user.profileuser.location_station.station_id).order_by('oct_adt_fare')
+
+    print(location_sort)
+
+    params = {'products':offer, 'search':srh, 'sorted_location':location_sort}
     return render(request,'search.html', params)
