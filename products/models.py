@@ -3,10 +3,18 @@ from django.contrib.auth.models import User
 
 
 # Create your models here.
+
+class Station(models.Model):
+    station_name = models.CharField(max_length=50)
+    station_id = models.IntegerField()
+    
 class UserProfile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     location = models.IntegerField()
 
+class UserProfile2(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE, related_name="profileuser")
+    location_station = models.ForeignKey(Station, on_delete=models.CASCADE)
 
 class Product(models.Model):
     title = models.CharField(max_length=50)
@@ -22,9 +30,7 @@ class Fares(models.Model):
     dest_station_id = models.IntegerField()
     oct_adt_fare = models.FloatField()
 
-class Station(models.Model):
-    station_name = models.CharField(max_length=50)
-    station_id = models.IntegerField()
+
 
 class ProductCategory(models.Model):
     product_category_name = models.CharField(max_length=100)

@@ -3,7 +3,7 @@ from .models import *
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import logout as auth_logout
 
-csv_filepathname="txt/Customer_preference_model.csv"
+csv_filepathname="txt/preference_matrix.csv"
 # csv_filepathname="txt/names_and_img2.csv"
 
 import re
@@ -13,8 +13,9 @@ import random
 from django.db.models import Q
 # Create your views here.
 
-
-        
+# import pycmf
+# import pandas as pd
+# import numpy as numpyfrom pathlib import Path        
     
 
 
@@ -41,88 +42,16 @@ class ProductDetailView(DetailView):
     template_name = 'product_detail.html'
 
 def AddOfferView(request):
-    # for i in range(4122, 4149):
-    #     cat = ProductCategory.objects.get(id = i)
-    #     # li = []
-    #     # for i in range(1,45972):
-    #     a = Offer.objects.filter(Offer_cat=cat)
-    #     tmp = ProductInfo.objects.get(id = 1)
-    #     for each in a:
-    #         try:
-    #             b = ProductInfo.objects.get(Product_asin__contains=each.Offer_asin)
-    #             each.Offer_key = b
-    #         except ProductInfo.DoesNotExist:
-    #             print("each.offer key =",each.Offer_asin)
-    #             each.Offer_key = tmp
-    #         each.save()
-    #     print("finish, ",cat.product_category_name)
-        
-        # print(b.Product_title)
-        # a.Offer_key = b
-        # a.save()
-    # with open('Video_Games.txt', 'w') as f:
-    #     for item in li:
-    #         f.write("%s\n" % item)
-                
-
-
-    # text_file = open("Video_Games.txt","w")
-    # cat = ProductCategory.objects.get(product_category_name="Video_Games")
-    # filtered = Offer.objects.filter(Offer_cat=cat)
-    # for each in filtered:
-    #     text_file.write(each.Offer_asin)
-    #     text_file.write("\n")
-    # print("filtered=============", filtered)
-    # for i in range(1,)
-
-    # dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'), delimiter=',', quotechar='"')
-
-    
-    # for row in dataReader:
-    #     a = Offer()
-    #     a.Offer_asin =row[1]
-    #     a.Offer_cat = ProductCategory.objects.get(product_category_name=row[2])
-    #     a.user = User.objects.get(username = row[0])
-    #     a.save()
-    #     print('hi')
-
-        
-    # print('finished')
-    # i = 1
-    # for row in dataReader:
-    #     a = ProductInfo.objects.get(Product_asin=row[0])
-    #     a.Product_category_name = ProductCategory.objects.get(product_category_name=row[3])
-    #     a.save()
-    # dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'), delimiter=',', quotechar='"')
-    # for row in dataReader:
-    #     user = User.objects.get(username=row[0])
-    #     for i in range(4122, 4149):
-    #         a = CustomerPreference_model()
-    #         a.User = user
-    #         a.ProductCategory = ProductCategory.objects.get(id=i)
-    #         a.value = row[i-4122+1]
-    #         a.save()
-    # i= 4122
-    # for row in dataReader:
-    #     for j in range(4122,4149):
-    #         print('hihihi', row[j-4122])
-    #         a = ProductAssociation_matrix()
-    #         a.Src_Product_Cat = ProductCategory.objects.get(id=i)
-    #         a.Dest_Product_Cat = ProductCategory.objects.get(id=j)
-    #         a.value = row[j-4122]
-    #         a.save()
-    #     i+=1
-        
-    locaion_list = Station.objects.all()
-    for i in range(1,12088):
-        try:
-            user = User.objects.get(id=i)
-            user.last_name = random.choice(locaion_list).station_id
-            user.save()
-            
-        except User.DoesNotExist:
-            print('User Not Exist')
-    print('finish')
+    # for i in range(1,12088):
+    #     try :
+    #         user = User.objects.get(id = i)
+    #         Profile = UserProfile2()
+    #         Profile.user = user
+    #         Profile.location_station = Station.objects.get(station_id = user.last_name)
+    #         Profile.save()
+    #     except user.DoesNotExist:
+    #         print('User Does Not Exist')
+    # print('finish')
 
 
     return render(request, 'add_offer.html')

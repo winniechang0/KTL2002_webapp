@@ -7,6 +7,7 @@
     {% for result in products %}
     <div style="width:250px; display: inline-block; padding:5px; margin:5px" class="border rounded">
         <div>{{result.user.username}}</div>
+        <div style="font-size: 10px;">{{result.user.profileuser.location_station.station_name}}</div>
         <div><b>{{result.Offer_key.Product_title}}</b></div>
         <!-- {{result.Product_image}} -->
         <img src="{{result.Offer_key.Product_image}}" width="200px"/>
