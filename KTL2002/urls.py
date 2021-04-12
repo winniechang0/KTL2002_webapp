@@ -28,4 +28,5 @@ urlpatterns = [
     path('login/', auth_views.auth_login, name='login'),
     path('logout/',LogoutView, name='logout'),
     path('search/', SearchPage, name='search_result'),
+    path('manage/',ManageView, name='manage'),
 ]

@@ -43,16 +43,15 @@ class ProductDetailView(DetailView):
     template_name = 'product_detail.html'
 
 def AddOfferView(request):
-    # for i in range(1,12088):
-    #     try :
-    #         user = User.objects.get(id = i)
-    #         Profile = UserProfile2()
-    #         Profile.user = user
-    #         Profile.location_station = Station.objects.get(station_id = user.last_name)
-    #         Profile.save()
-    #     except user.DoesNotExist:
-    #         print('User Does Not Exist')
-    # print('finish')
+    for i in range(1,12088):
+        try :
+            user = User.objects.get(id = i)
+            user.set_password(raw_password="000000")
+            user.save()
+        except user.DoesNotExist:
+            print('User Does Not Exist')
+    print('finish')
+
 
 
     return render(request, 'add_offer.html')
@@ -101,3 +100,9 @@ def SearchPage(request):
 
     params = {'products':offer, 'search':srh, 'sorted_location':location_sort}
     return render(request,'search.html', params)
+
+
+def ManageView(request):
+    myOffer = Offer.objects.filter(user=request.user)
+    params = {'Offer':myOffer}
+    return render(request, 'manage.html',params)

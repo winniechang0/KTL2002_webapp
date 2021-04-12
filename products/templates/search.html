@@ -5,12 +5,17 @@
 <h1> Search result of {{search}}</h1>
 <ul>
     {% for result in products %}
-    <div style="width:250px; display: inline-block; padding:5px; margin:5px" class="border rounded">
+    <div style="width:250px;height:308 display: inline-block; padding:5px; margin:5px" class="border rounded">
         <div>{{result.user.username}}</div>
         <div style="font-size: 10px;">{{result.user.profileuser.location_station.station_name}}</div>
         <div><b>{{result.Offer_key.Product_title}}</b></div>
         <!-- {{result.Product_image}} -->
+        {% if result.Offer_key.Product_image %}
         <img src="{{result.Offer_key.Product_image}}" width="200px"/>
+        {% else %}
+        <div style="width: 200px;height:200px;background-color: darkgrey;padding: auto;">No Image</div>
+        {% endif %}
+
         <button class="btn btn-primary" onclick="AjaxFormSubmit()" href="#" id="{{ forloop.counter }}">Like</button>
     </div>
     {% endfor %}
