@@ -43,29 +43,29 @@ class ProductDetailView(DetailView):
     template_name = 'product_detail.html'
 
 def AddOfferView(request):
-    dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'),delimiter=',', quotechar='"')
+    # dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'),delimiter=',', quotechar='"')
 
-    for row in dataReader:
-        try:
-            if row[1][0] == '$':
-                product = ProductInfo.objects.get(Product_asin=row[0])
-                if row[1].find('-') == -1 :
-                    print('??----------------------------------------------',row[1][1:])
-                    value = float(row[1][1:])
-                    product.value = value
-                else:
-                    index = 0
-                    for each in row[1]:
-                        if each != '-':
-                            index += 1
-                        else:
-                            break
-                    index+=1
-                    print('hihi----------------------------------------------',row[1][index+2:])
-                    product.value = float(row[1][index+2:])
-                product.save()
-        except:
-            print('cannot')
+    # for row in dataReader:
+    #     try:
+    #         if row[1][0] == '$':
+    #             product = ProductInfo.objects.get(Product_asin=row[0])
+    #             if row[1].find('-') == -1 :
+    #                 print('??----------------------------------------------',row[1][1:])
+    #                 value = float(row[1][1:])
+    #                 product.value = value
+    #             else:
+    #                 index = 0
+    #                 for each in row[1]:
+    #                     if each != '-':
+    #                         index += 1
+    #                     else:
+    #                         break
+    #                 index+=1
+    #                 print('hihi----------------------------------------------',row[1][index+2:])
+    #                 product.value = float(row[1][index+2:])
+    #             product.save()
+    #     except:
+    #         print('cannot')
             
 
 
