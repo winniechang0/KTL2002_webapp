@@ -41,6 +41,7 @@ class ProductInfo(models.Model):
     Product_asin = models.CharField(max_length=50)
     Product_category_name = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
     Product_image = models.CharField(max_length = 500)
+    value = models.FloatField()
 
 class Offer(models.Model):
     Offer_asin = models.CharField(max_length = 50)

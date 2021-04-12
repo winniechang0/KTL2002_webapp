@@ -5,7 +5,7 @@
 <h1> Search result of {{search}}</h1>
 <ul>
     {% for result in products %}
-    <div style="width:250px;height:308 display: inline-block; padding:5px; margin:5px" class="border rounded">
+    <div style="width:250px;height:308 ;display: inline-block; padding:5px; margin:5px" class="border rounded">
         <div>{{result.user.username}}</div>
         <div style="font-size: 10px;">{{result.user.profileuser.location_station.station_name}}</div>
         <div><b>{{result.Offer_key.Product_title}}</b></div>
