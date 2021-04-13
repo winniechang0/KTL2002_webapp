@@ -134,3 +134,6 @@ def ManageView(request):
     myOffer = Offer.objects.filter(user=request.user)
     params = {'Offer':myOffer}
     return render(request, 'manage.html',params)
+
+def ExchangeView(request):
+    return render(request, 'exchange.html')

@@ -29,4 +29,5 @@ urlpatterns = [
     path('logout/',LogoutView, name='logout'),
     path('search/', SearchPage, name='search_result'),
     path('manage/',ManageView, name='manage'),
+    path('exchange/', ExchangeView, name='exchange')
 ]
