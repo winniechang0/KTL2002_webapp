@@ -5,7 +5,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
 
-csv_filepathname="txt/preference_matrix.csv"
+csv_filepathname="txt/matching_score.csv"
 # csv_filepathname="txt/names_and_img2.csv"
 
 import re
@@ -100,17 +100,18 @@ def LogoutView(request):
     return render(request, "logout.html")
 
 def HomeView(request):
-    # dataReader = csv.reader(open(csv_filepathname,encoding='utf-8'),delimiter=',', quotechar='"')
-    # j=1
-    # for row in dataReader:
-    #     a = User.objects.get(username=row[0])
-    #     for i in range(4122,4149):
-    #         cat = ProductCategory.objects.get(id=i)
-    #         b = CustomerPreference_model.objects.get(User=a,ProductCategory=cat)
-    #         b.value = row[i-4121]
-    #         b.save()
-    #         print(j)
-    #         j+=1
+    dataReader = csv.reader(open(csv_filepathname,encoding='utf-8'),delimiter=',', quotechar='"')
+    for row in dataReader:
+        user = User.objects.get(username=row[0])
+        for i in range(4122,4149):
+            cat = ProductCategory.objects.get(id = i)
+            a = MatchingScore()
+            a.user = user
+            a.ProductCategory = cat
+            a.value = row[i-4121]
+            a.save()
+            print('saved',user.username)
+        
         
 
     return render(request,'start.html')
