@@ -66,6 +66,10 @@ class CustomerPreference_model(models.Model):
     ProductCategory = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
     value = models.FloatField(default=0)
 
+class MatchingScore(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    ProductCategory = models.ForeignKey(ProductCategory,on_delete=models.CASCADE)
+    value = models.FloatField()
 
 
 

@@ -4,7 +4,7 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import authenticate, login
 
-csv_filepathname="txt/asin_price.csv"
+csv_filepathname="txt/matching_score.csv"
 # csv_filepathname="txt/names_and_img2.csv"
 
 import re
@@ -44,6 +44,17 @@ class ProductDetailView(DetailView):
 
 def AddOfferView(request):
     # dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'),delimiter=',', quotechar='"')
+
+    # for row in dataReader:
+    #     try:
+    #         matching_score = MatchingScore()
+    #         matching_score.user = User.objects.get(username=row[0])
+    #         for i in range(4122,4149):
+    #             matching_score.ProductCategory = ProductCategory.objects.get(id=i)
+    #             matching_score.value = row[i-4122+1]
+    #         matching_score.save()
+    #     except:
+    #         print('no')
 
     # for row in dataReader:
     #     try:
