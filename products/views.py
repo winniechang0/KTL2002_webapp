@@ -3,8 +3,9 @@ from .models import *
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import authenticate, login
+from django.http import HttpResponseRedirect
 
-csv_filepathname="txt/matching_score.csv"
+csv_filepathname="txt/preference_matrix.csv"
 # csv_filepathname="txt/names_and_img2.csv"
 
 import re
@@ -43,46 +44,36 @@ class ProductDetailView(DetailView):
     template_name = 'product_detail.html'
 
 def AddOfferView(request):
-    # dataReader = csv.reader(open(csv_filepathname, encoding='utf-8'),delimiter=',', quotechar='"')
+    cat = ProductCategory.objects.all()
+    params = {'ProductCat': cat}
+    addoffer = Offer()
+    if request.method == 'POST':
+        if request.POST.get('offername'):
+            try: 
+                offerkey = ProductInfo.objects.get(Product_title=request.POST.get('offername'))
+                addoffer.Offer_key = offerkey
+                addoffer.Offer_asin = offerkey.Product_asin
+                addoffer.Offer_cat = offerkey.Product_category_name
+                addoffer.user = request.user
+                addoffer.save()
+                print('=============================created')
+            except:
+                offerkey = ProductInfo()
+                offerkey.Product_title = request.POST.get('offername')
+                offerkey.Product_asin = random.randint(1000000,9999999)
+                offerkey.Product_category_name = ProductCategory.objects.get(id = request.POST.get('cat'))
+                offerkey.value = request.POST.get('value')
+                offerkey.save()
+                addoffer.Offer_key = offerkey
+                addoffer.Offer_asin = offerkey.Product_asin
+                addoffer.Offer_cat = offerkey.Product_category_name
+                addoffer.user = request.user
+                addoffer.save()
+                print('=============================created2')
 
-    # for row in dataReader:
-    #     try:
-    #         matching_score = MatchingScore()
-    #         matching_score.user = User.objects.get(username=row[0])
-    #         for i in range(4122,4149):
-    #             matching_score.ProductCategory = ProductCategory.objects.get(id=i)
-    #             matching_score.value = row[i-4122+1]
-    #         matching_score.save()
-    #     except:
-    #         print('no')
-
-    # for row in dataReader:
-    #     try:
-    #         if row[1][0] == '$':
-    #             product = ProductInfo.objects.get(Product_asin=row[0])
-    #             if row[1].find('-') == -1 :
-    #                 print('??----------------------------------------------',row[1][1:])
-    #                 value = float(row[1][1:])
-    #                 product.value = value
-    #             else:
-    #                 index = 0
-    #                 for each in row[1]:
-    #                     if each != '-':
-    #                         index += 1
-    #                     else:
-    #                         break
-    #                 index+=1
-    #                 print('hihi----------------------------------------------',row[1][index+2:])
-    #                 product.value = float(row[1][index+2:])
-    #             product.save()
-    #     except:
-    #         print('cannot')
             
 
-
-
-
-    return render(request, 'add_offer.html')
+    return render(request, 'add_offer.html',params)
 
 
 def LoginView(request):
@@ -109,6 +100,19 @@ def LogoutView(request):
     return render(request, "logout.html")
 
 def HomeView(request):
+    dataReader = csv.reader(open(csv_filepathname,encoding='utf-8'),delimiter=',', quotechar='"')
+    j=1
+    for row in dataReader:
+        a = User.objects.get(username=row[0])
+        for i in range(4122,4149):
+            cat = ProductCategory.objects.get(id=i)
+            b = CustomerPreference_model.objects.get(User=a,ProductCategory=cat)
+            b.value = row[i-4121]
+            b.save()
+            print(j)
+            j+=1
+        
+
     return render(request,'start.html')
 
 def SearchPage(request):
