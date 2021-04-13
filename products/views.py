@@ -100,17 +100,17 @@ def LogoutView(request):
     return render(request, "logout.html")
 
 def HomeView(request):
-    dataReader = csv.reader(open(csv_filepathname,encoding='utf-8'),delimiter=',', quotechar='"')
-    j=1
-    for row in dataReader:
-        a = User.objects.get(username=row[0])
-        for i in range(4122,4149):
-            cat = ProductCategory.objects.get(id=i)
-            b = CustomerPreference_model.objects.get(User=a,ProductCategory=cat)
-            b.value = row[i-4121]
-            b.save()
-            print(j)
-            j+=1
+    # dataReader = csv.reader(open(csv_filepathname,encoding='utf-8'),delimiter=',', quotechar='"')
+    # j=1
+    # for row in dataReader:
+    #     a = User.objects.get(username=row[0])
+    #     for i in range(4122,4149):
+    #         cat = ProductCategory.objects.get(id=i)
+    #         b = CustomerPreference_model.objects.get(User=a,ProductCategory=cat)
+    #         b.value = row[i-4121]
+    #         b.save()
+    #         print(j)
+    #         j+=1
         
 
     return render(request,'start.html')
@@ -138,6 +138,3 @@ def ManageView(request):
     myOffer = Offer.objects.filter(user=request.user)
     params = {'Offer':myOffer}
     return render(request, 'manage.html',params)
-
-def ExchangeView(request):
-    return render(request, 'exchange.html')
