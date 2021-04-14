@@ -100,7 +100,24 @@ def LogoutView(request):
     return render(request, "logout.html")
 
 def HomeView(request):       
-
+    # a = User.objects.get(id = 5)
+    # b = User.objects.get(id = 6)
+    # Offer_a = Offer.objects.get(id = 1)
+    # Offer_b = Offer.objects.get(id = 3)
+    # c = ExchangeRequest()
+    # c.user_from = a
+    # c.user_to = b
+    # c.Offer_requestfor = Offer_b
+    # c.Offer_provide = Offer_a
+    # c.status = 0
+    # c.save()
+    # d = ExchangeRequest()
+    # d.user_from = b
+    # d.user_to = a
+    # d.Offer_requestfor = Offer_a
+    # d.Offer_provide = Offer_b
+    # d.status = 0
+    # d.save()
     return render(request,'start.html')
 
 def SearchPage(request):

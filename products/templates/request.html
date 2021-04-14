@@ -5,17 +5,87 @@
     <div>
         <H1>Received Request</H1>
             {% for each in received %}
-                <div class="border rounded" style="width:200px;height:308px;padding:5px">
+                <div style="display: inline-block; padding:5px; margin:5px;vertical-align:text-top" class="border rounded">
                     <div>{{each.user_from.username}}</div>
                     <div>{{each.user_from.profileuser.location_station.station_name}}</div>
+                    
+                    <div style="display:flex;">
+                        <div style="width:400px">
+                            <h5>Provide</h5>
+                            <div>{{each.Offer_provide.Offer_key.Product_title}}</div>
+                            
+                            {% if each.Offer_provide.Offer_key.Product_image and each.Offer_provide.Offer_key.Product_image.strip %}
+                            <img src="{{each.Offer_provide.Offer_key.Product_image}}" style="width:200px;height:200px" />
+                            
+                            {% else %}
+                            <div style="width: 200px;height:200px;background-color: darkgrey;padding: auto;">No Image</div>
+                            {% endif %}
+                        </div>
+                        <i class="fas fa-sync-alt"></i>
+                        <div style="width:400px">
+                            <h5>Request For</h5>
+                            <div>{{each.Offer_requestfor.Offer_key.Product_title}}</div>
+                            
+                            {% if each.Offer_requestfor.Offer_key.Product_image and each.Offer_provide.Offer_key.Product_image.strip %}
+                            <img src="{{each.Offer_requestfor.Offer_key.Product_image}}" style="width:200px;height:200px" />
+                            
+                            {% else %}
+                            <div style="width: 200px;height:200px;background-color: darkgrey;padding: auto;">No Image</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content: space-between;">
+                        <div>
+                            <button type="button" class="btn btn-primary">Accept</button>
+                            <button type="button" class="btn btn-secondary">Decline</button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary">Chat</button>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
     </div>
     <div>
         <H1>Sent Request</H1>
             {% for each in sent %}
-                <div class="border rounded" style="width:200px;height:308px;padding:5px">
-
+                <div style="display: inline-block; padding:5px; margin:5px;vertical-align:text-top" class="border rounded">
+                    <div>{{each.user_from.username}}</div>
+                    <div>{{each.user_from.profileuser.location_station.station_name}}</div>
+                
+                    <div style="display:flex;">
+                        <div style="width:400px">
+                            <h5>Provide</h5>
+                            <div>{{each.Offer_provide.Offer_key.Product_title}}</div>
+                
+                            {% if each.Offer_provide.Offer_key.Product_image and each.Offer_provide.Offer_key.Product_image.strip %}
+                            <img src="{{each.Offer_provide.Offer_key.Product_image}}" style="width:200px;height:200px" />
+                
+                            {% else %}
+                            <div style="width: 200px;height:200px;background-color: darkgrey;padding: auto;">No Image</div>
+                            {% endif %}
+                        </div>
+                        <i class="fas fa-sync-alt"></i>
+                        <div style="width:400px">
+                            <h5>Request For</h5>
+                            <div>{{each.Offer_requestfor.Offer_key.Product_title}}</div>
+                
+                            {% if each.Offer_requestfor.Offer_key.Product_image and each.Offer_provide.Offer_key.Product_image.strip %}
+                            <img src="{{each.Offer_requestfor.Offer_key.Product_image}}" style="width:200px;height:200px" />
+                
+                            {% else %}
+                            <div style="width: 200px;height:200px;background-color: darkgrey;padding: auto;">No Image</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        <h5>Status</h5>
+                        {% if each.status == 0 %}
+                            Waiting for reply
+                        {% else %}
+                            Successfully exchanged!
+                        {% endif %}
+                    </div>
                 </div>
             {% endfor %}
     </div>
