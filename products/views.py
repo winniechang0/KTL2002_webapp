@@ -4,6 +4,9 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt,csrf_protect #Add this
+
+
 
 csv_filepathname="txt/matching_score.csv"
 # csv_filepathname="txt/names_and_img2.csv"
@@ -16,7 +19,7 @@ from django.db.models import Q
 # Create your views here.
 
 # import pycmf
-# import pandas as pd
+import pandas as pd
 # import numpy as numpyfrom pathlib import Path        
     
 
@@ -150,26 +153,39 @@ def RequestView(request):
     params = {'received':received, 'sent':sent}
     return render(request, 'request.html',params)
 
+@csrf_exempt 
 def ExchangeView(request):
     products = []
-    if request.is_ajax and request.method == "GET":
-        value = request.GET.get('price', 0)
+    value = request.GET['price'] #price
+
     current_user = request.user
-    user_location = current_user.profileuser.location_station.station_id
+    user_location = current_user.profileuser.location_station.station_id #location
 
-    matching_score_sort = MatchingScore.objects.filter(user=current_user).order_by('-value').values_list('ProductCategory', flat=True)
+    matching_score_sort = MatchingScore.objects.filter(user=current_user).order_by('-value')[:2]
     stations = Fares.objects.filter(oct_adt_fare__lte=10, src_station_id=user_location).exclude(dest_station_id=user_location).values_list('dest_station_id', flat=True)
-
+    
     for each in matching_score_sort:
-        category = ProductCategory.objects.get(id=each)
-        #products.append(category.product_category_name)
-        asin = ProductInfo.objects.filter(Product_category_name=category).values_list('Product_asin', flat=True)
-        owner = Offer.objects.filter(Offer_asin__in = asin).values_list('user', flat=True)
+        category = ProductCategory.objects.get(id=each.ProductCategory.id)
+        asin = ProductInfo.objects.filter(Product_category_name=category, value__lte=float(value)*1.1, value__gte=float(value)*0.9).values_list('Product_asin', flat=True)
+        offer = Offer.objects.filter(Offer_asin__in = asin)
+        for o in offer:
+            if o.user.profileuser.location_station.station_id in stations:
+                products.append(Offer.objects.filter(user=o.user, Offer_asin__in=asin).exclude(user=current_user)[:3])
+    #owner = Offer.objects.filter(Offer_asin__in = asin).values_list('user', flat=True)
 
-        for o in owner:
-            x = User.objects.get(id=o)
-            # if (x.profileuser.location in stations):
-            #    products.append(Offer.objects.filter(user=x).values_list('Offer_asin', flat=True))
-
-    params = {'destinations': stations, 'matching_score': matching_score_sort, 'products':products}
+    # for o in owner:
+    #    x = User.objects.get(id=o)
+        # if (x.profileuser.location in stations):
+        #    products.append(Offer.objects.filter(user=x).values_list('Offer_asin', flat=True))
+    
+    #params = {'destinations': stations, 'matching_score': matching_score_sort, 'products':products}
+    '''
+    df = pd.DataFrame(products)
+    df = df.drop_duplicates(keep='first')
+    res = []
+    for column in df.columns:
+        li = df[column].tolist()
+        res.append(li)
+    '''
+    params = {'price': value, 'matching_score': matching_score_sort, 'products': list(set(products))}
     return render(request, 'exchange.html', params)
