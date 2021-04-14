@@ -4,10 +4,20 @@
 <div>
     <div>
         <H1>Received Request</H1>
-
+            {% for each in received %}
+                <div class="border rounded" style="width:200px;height:308px;padding:5px">
+                    <div>{{each.user_from.username}}</div>
+                    <div>{{each.user_from.profileuser.location_station.station_name}}</div>
+                </div>
+            {% endfor %}
     </div>
     <div>
         <H1>Sent Request</H1>
+            {% for each in sent %}
+                <div class="border rounded" style="width:200px;height:308px;padding:5px">
+
+                </div>
+            {% endfor %}
     </div>
 </div>
 

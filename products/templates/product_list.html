@@ -17,9 +17,9 @@
   </div>
 </form> -->
 
-<form action="{% url 'search_result' %}" method="get">
-  <input name="query" type="text" placeholder="Search here..">
-  <button type="submit" name="button">Submit</button>
+<form action="{% url 'search_result' %}" method="get" style="display: flex;">
+  <input name="query" type="text" placeholder="Search here.." class="form-control" style="width:70%">
+  <button type="submit" name="button" class="btn btn-primary">Search</button>
 </form>
 
 {% endblock %}

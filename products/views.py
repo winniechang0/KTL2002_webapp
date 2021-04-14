@@ -99,20 +99,7 @@ def LogoutView(request):
     auth_logout(request)
     return render(request, "logout.html")
 
-def HomeView(request):
-    # dataReader = csv.reader(open(csv_filepathname,encoding='utf-8'),delimiter=',', quotechar='"')
-    # for row in dataReader:
-    #     user = User.objects.get(username=row[0])
-    #     for i in range(4122,4149):
-    #         cat = ProductCategory.objects.get(id = i)
-    #         a = MatchingScore()
-    #         a.user = user
-    #         a.ProductCategory = cat
-    #         a.value = row[i-4121]
-    #         a.save()
-    #         print('saved',user.username)
-        
-        
+def HomeView(request):       
 
     return render(request,'start.html')
 
@@ -141,7 +128,10 @@ def ManageView(request):
     return render(request, 'manage.html',params)
 
 def RequestView(request):
-    return render(request, 'request.html')
+    received = ExchangeRequest.objects.filter(user_to=request.user)
+    sent = ExchangeRequest.objects.filter(user_from=request.user)
+    params = {'received':received, 'sent':sent}
+    return render(request, 'request.html',params)
 
 def ExchangeView(request):
 
