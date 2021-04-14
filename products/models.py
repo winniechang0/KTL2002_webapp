@@ -53,7 +53,7 @@ class Offer(models.Model):
 class Likes(models.Model):
     User = models.ForeignKey(User,on_delete=models.CASCADE)
     Like = models.IntegerField(default=0)
-    Like_date = models.DateField()
+    # Like_date = models.DateField()
     Offer = models.ForeignKey(Offer, on_delete=models.CASCADE)
 
 class ProductAssociation_matrix(models.Model):

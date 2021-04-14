@@ -121,16 +121,35 @@ def HomeView(request):
     return render(request,'start.html')
 
 def SearchPage(request):
+    if request.method == "POST":
+        print('POST got',request.POST['result'])
+        try:
+            product = ProductInfo.objects.get(Product_asin=request.POST['result'])
+            us = User.objects.get(id = request.POST['user_object'])
+            offer = Offer.objects.get(Offer_key=product,user =us)
+            like = Likes.objects.get(user=request.user, Offer=offer)
+            
+            if like.Like == 0:
+                like.Like = 1
+            else:
+                like.Like = 0
+            like.save()
+        except:
+            like = Likes()
+            like.User = request.user
+            like.Like = 1
+            like.Offer = Offer.objects.get(Offer_asin = request.POST['result'],user=request.POST['user_object'])
+            like.save()
     srh = request.GET['query']
     products = ProductInfo.objects.filter(Product_title__icontains=srh).values_list('Product_asin', flat=True)
-    for each in products:
-        print(each)
+    # for each in products:
+    #     print(each)
     offer = Offer.objects.filter(Offer_asin__in = products)
     # like  = Likes.objects.filter(User = request.user).values_list('Offer',flat=True)
 
-    for each in offer:
-        print('============',each.Offer_key.Product_title, each.Offer_asin)
-    print('===================================================================')
+    # for each in offer:
+    #     print('============',each.Offer_key.Product_title, each.Offer_asin)
+    # print('===================================================================')
     location_sort = Fares.objects.filter(src_station_id=request.user.profileuser.location_station.station_id).order_by('oct_adt_fare')
 
     print(location_sort)
