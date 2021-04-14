@@ -125,13 +125,13 @@ def SearchPage(request):
         print('POST got',request.POST['result'])
         try:
             product = ProductInfo.objects.get(Product_asin=request.POST['result'])
-            print('get product')
+            # print('get product')
             us = User.objects.get(id = request.POST['user_object'])
-            print('get us')
+            # print('get us')
             offer = Offer.objects.get(Offer_key=product,user =us)
-            print('get offer')
+            # print('get offer')
             like = Likes.objects.get(Offer=offer,User=request.user)
-            print('get like')
+            # print('get like')
             if like.Like == 0:
                 like.Like = 1
             else:
@@ -158,7 +158,7 @@ def SearchPage(request):
     print(location_sort)
     like_ = Likes.objects.filter(User=request.user,Like=1).values_list('Offer',flat = True)
     like_list = list(like_)
-    print('=============like list:',like_list)
+    # print('=============like list:',like_list)
 
 
     params = {'products':offer, 'search':srh, 'sorted_location':location_sort,'like_list':like_list}
