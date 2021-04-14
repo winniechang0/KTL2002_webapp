@@ -15,24 +15,36 @@
         {% else %}
         <div style="width: 200px;height:200px;background-color: darkgrey;padding: auto;">No Image</div>
         {% endif %}
-
-        <button class="btn btn-primary" onclick="AjaxFormSubmit()" href="#" id="{{ forloop.counter }}">Like</button>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="result" value='{{result.Offer_key.Product_asin}}'/>
+            <input type="hidden" name="user_object" value='{{result.user.id}}' />
+            {% if result.id in like_list %}
+            <input type="submit" value="Unlike" class="btn btn-primary">
+            {% else %}
+            <input type="submit" value="Like" class="btn btn-primary">
+            {% endif %}
+        </form>
+        
     </div>
     {% endfor %}
 </ul>
 <script>
-   function AjaxFormSubmit(id,offer_id,user) {
-        $.ajax({
-            // url: '/event/{{ event.id }}/',
-            type: "POST",
-            data: { offer_id: offer_id, user:user }
-        }).done(function (returned_data) {
-            document.getElementById(id).className = "btn btn-secondary"
-            document.getElementById(id).innerText = Liked
-            
-
-        });
-    } 
+//    function AjaxFormSubmit(event) {
+//             // Stop form from submitting normally
+//             event.preventDefault();
+//             var friendForm = $(this);
+//             // Send the data using post
+//             var posting = $.post(friendForm.attr('action'), friendForm.serialize());
+//             // if success:
+//             posting.done(function (data) {
+//                 // success actions, maybe change submit button to 'friend added' or whatever
+//             });
+//             // if failure:
+//             posting.fail(function (data) {
+//                 // 4xx or 5xx response, alert user about failure
+//             })
+//    }
 </script>
 
 {% endblock %}
