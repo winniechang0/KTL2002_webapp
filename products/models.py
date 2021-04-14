@@ -71,5 +71,12 @@ class MatchingScore(models.Model):
     ProductCategory = models.ForeignKey(ProductCategory,on_delete=models.CASCADE)
     value = models.FloatField()
 
+class ExchangeRequest(models.Model):
+    user_from = models.ForeignKey(User, on_delete=models.CASCADE,related_name="user_from")
+    user_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_to")
+    # 0 = sent but not yet ans/ 1 = finished(accept)
+    status = models.IntegerField()
+
+
 
 
