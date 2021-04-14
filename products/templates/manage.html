@@ -16,20 +16,23 @@
             {% else %}
             <div style="width: 200px;height:200px;background-color: darkgrey;padding: auto;">No Image</div>
             {% endif %}
-            
-            <input type='button' class="btn btn-primary" id="exchangebtn" value='Exchange' onclick="foo()"></input>
+            <form>
+                <input type='button' class="btn btn-primary" id="exchangebtn" value='Exchange' onclick="foo({{result.Offer_key.value}})"></input>
+            </form>
             <!-- <button class="btn btn-primary" onclick="AjaxFormSubmit()" href="#" id="{{ forloop.counter }}">Like</button> -->
         </div>
     {% endfor %}
 </div>
 
 <script>
+    
     function foo(){
-        $.ajax({
+        // console.log('yoyo')
+        $j.ajax({
             url: "/exchange/",
             type:"POST",
             data: {
-                'price':result.Offer_key.value
+                
             },
             complete:function(){
                 alert('Hi');
@@ -39,5 +42,7 @@
             }
         })
     };
+
+
 </script>
 {% endblock %}
