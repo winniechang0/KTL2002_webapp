@@ -74,7 +74,7 @@ class MatchingScore(models.Model):
 class ExchangeRequest(models.Model):
     user_from = models.ForeignKey(User, on_delete=models.CASCADE,related_name="user_from")
     user_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_to")
-    # 0 = sent but not yet ans/ 1 = finished(accept)
+    # 0 = sent but not yet ans/ 1 = finished(accept) / 2= declined
     Offer_requestfor = models.ForeignKey(Offer,on_delete=models.CASCADE,related_name="Offer_requestfor")
     Offer_provide = models.ForeignKey(Offer, on_delete=models.CASCADE, related_name="Offer_provide")
     status = models.IntegerField()
