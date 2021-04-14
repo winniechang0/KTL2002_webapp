@@ -141,4 +141,24 @@ def ManageView(request):
     return render(request, 'manage.html',params)
 
 def ExchangeView(request):
-    return render(request, 'exchange.html')
+
+    products = []
+    current_user = request.user
+    user_location = current_user.profileuser.location_station.station_id
+
+    matching_score_sort = MatchingScore.objects.filter(user=current_user).order_by('-value').values_list('ProductCategory', flat=True)
+    stations = Fares.objects.filter(oct_adt_fare__lte=10, src_station_id=user_location).exclude(dest_station_id=user_location).values_list('dest_station_id', flat=True)
+
+    for each in matching_score_sort:
+        category = ProductCategory.objects.get(id=each)
+        #products.append(category.product_category_name)
+        asin = ProductInfo.objects.filter(Product_category_name=category).values_list('Product_asin', flat=True)
+        owner = Offer.objects.filter(Offer_asin__in = asin).values_list('user', flat=True)
+
+        for o in owner:
+            x = User.objects.get(id=o)
+            if (x.profileuser.location in stations):
+                products.append(Offer.objects.filter(user=x).values_list('Offer_asin', flat=True))
+
+    params = {'destinations': stations, 'matching_score': matching_score_sort, 'products':products}
+    return render(request, 'exchange.html', params)
