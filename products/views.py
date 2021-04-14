@@ -125,10 +125,13 @@ def SearchPage(request):
         print('POST got',request.POST['result'])
         try:
             product = ProductInfo.objects.get(Product_asin=request.POST['result'])
+            print('get product')
             us = User.objects.get(id = request.POST['user_object'])
+            print('get us')
             offer = Offer.objects.get(Offer_key=product,user =us)
-            like = Likes.objects.get(user=request.user, Offer=offer)
-            
+            print('get offer')
+            like = Likes.objects.get(Offer=offer,User=request.user)
+            print('get like')
             if like.Like == 0:
                 like.Like = 1
             else:
@@ -153,8 +156,13 @@ def SearchPage(request):
     location_sort = Fares.objects.filter(src_station_id=request.user.profileuser.location_station.station_id).order_by('oct_adt_fare')
 
     print(location_sort)
+    like_ = Likes.objects.filter(User=request.user,Like=1).values_list('Offer',flat = True)
+    like_list = list(like_)
+    print('=============like list:',like_list)
 
-    params = {'products':offer, 'search':srh, 'sorted_location':location_sort}
+
+    params = {'products':offer, 'search':srh, 'sorted_location':location_sort,'like_list':like_list}
+
     return render(request,'search.html', params)
 
 

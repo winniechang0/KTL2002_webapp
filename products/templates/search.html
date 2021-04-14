@@ -19,8 +19,11 @@
             {% csrf_token %}
             <input type="hidden" name="result" value='{{result.Offer_key.Product_asin}}'/>
             <input type="hidden" name="user_object" value='{{result.user.id}}' />
+            {% if result.id in like_list %}
+            <input type="submit" value="Unlike" class="btn btn-primary">
+            {% else %}
             <input type="submit" value="Like" class="btn btn-primary">
-
+            {% endif %}
         </form>
         
     </div>
