@@ -100,17 +100,17 @@ def LogoutView(request):
     return render(request, "logout.html")
 
 def HomeView(request):
-    dataReader = csv.reader(open(csv_filepathname,encoding='utf-8'),delimiter=',', quotechar='"')
-    for row in dataReader:
-        user = User.objects.get(username=row[0])
-        for i in range(4122,4149):
-            cat = ProductCategory.objects.get(id = i)
-            a = MatchingScore()
-            a.user = user
-            a.ProductCategory = cat
-            a.value = row[i-4121]
-            a.save()
-            print('saved',user.username)
+    # dataReader = csv.reader(open(csv_filepathname,encoding='utf-8'),delimiter=',', quotechar='"')
+    # for row in dataReader:
+    #     user = User.objects.get(username=row[0])
+    #     for i in range(4122,4149):
+    #         cat = ProductCategory.objects.get(id = i)
+    #         a = MatchingScore()
+    #         a.user = user
+    #         a.ProductCategory = cat
+    #         a.value = row[i-4121]
+    #         a.save()
+    #         print('saved',user.username)
         
         
 
