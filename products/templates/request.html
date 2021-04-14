@@ -70,7 +70,7 @@
                             <h5>Request For</h5>
                             <div>{{each.Offer_requestfor.Offer_key.Product_title}}</div>
                 
-                            {% if each.Offer_requestfor.Offer_key.Product_image and each.Offer_provide.Offer_key.Product_image.strip %}
+                            {% if each.Offer_requestfor.Offer_key.Product_image and each.Offer_requestfor.Offer_key.Product_image.strip %}
                             <img src="{{each.Offer_requestfor.Offer_key.Product_image}}" style="width:200px;height:200px" />
                 
                             {% else %}
