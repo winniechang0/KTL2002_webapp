@@ -134,8 +134,9 @@ def RequestView(request):
     return render(request, 'request.html',params)
 
 def ExchangeView(request):
-
     products = []
+    if request.is_ajax and request.method == "GET":
+        value = request.GET.get('price', 0)
     current_user = request.user
     user_location = current_user.profileuser.location_station.station_id
 
@@ -150,8 +151,8 @@ def ExchangeView(request):
 
         for o in owner:
             x = User.objects.get(id=o)
-            if (x.profileuser.location in stations):
-                products.append(Offer.objects.filter(user=x).values_list('Offer_asin', flat=True))
+            # if (x.profileuser.location in stations):
+            #    products.append(Offer.objects.filter(user=x).values_list('Offer_asin', flat=True))
 
     params = {'destinations': stations, 'matching_score': matching_score_sort, 'products':products}
     return render(request, 'exchange.html', params)
