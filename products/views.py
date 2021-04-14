@@ -140,6 +140,9 @@ def ManageView(request):
     params = {'Offer':myOffer}
     return render(request, 'manage.html',params)
 
+def RequestView(request):
+    return render(request, 'request.html')
+
 def ExchangeView(request):
 
     products = []
