@@ -189,7 +189,7 @@ def ExchangeView(request):
     current_user = request.user
     user_location = current_user.profileuser.location_station.station_id #location
 
-    matching_score_sort = MatchingScore.objects.filter(user=current_user).order_by('-value')[:3]
+    matching_score_sort = MatchingScore.objects.filter(user=current_user).order_by('-value')[:4]
     stations = Fares.objects.filter(oct_adt_fare__lte=10, src_station_id=user_location).exclude(dest_station_id=user_location).values_list('dest_station_id', flat=True)
 
     owners = UserProfile.objects.filter(location__in=stations).values_list('user', flat=True)
