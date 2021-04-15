@@ -188,6 +188,7 @@ def ExchangeView(request):
 
     current_user = request.user
     user_location = current_user.profileuser.location_station.station_id #location
+    user_item = Offer.objects.filter(user=current_user).values_list('Offer_asin', flat=True)
 
     matching_score_sort = MatchingScore.objects.filter(user=current_user).order_by('-value')[:4]
     stations = Fares.objects.filter(oct_adt_fare__lte=10, src_station_id=user_location).exclude(dest_station_id=user_location).values_list('dest_station_id', flat=True)
@@ -195,7 +196,7 @@ def ExchangeView(request):
     owners = UserProfile.objects.filter(location__in=stations).values_list('user', flat=True)
     for each in matching_score_sort:
         category = ProductCategory.objects.get(id=each.ProductCategory.id)
-        asin = ProductInfo.objects.filter(Product_category_name=category, value__lte=float(value)*1.1, value__gte=float(value)*0.9).values_list('Product_asin', flat=True)
+        asin = ProductInfo.objects.filter(Product_category_name=category, value__lte=float(value)*1.1, value__gte=float(value)*0.9).exclude(Product_asin__in=user_item).values_list('Product_asin', flat=True)
         products.append(Offer.objects.filter(Offer_asin__in = asin, user__in=owners)[:3])
     #owner = Offer.objects.filter(Offer_asin__in = asin).values_list('user', flat=True)
 
