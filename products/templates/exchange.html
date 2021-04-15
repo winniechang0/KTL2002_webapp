@@ -6,6 +6,25 @@
 </div>
 
 <ul>
-    
+    {{price}}
+    {% for each in products %}
+        {% for x in each%}
+            <div style="width:250px;height: 308px; display: inline-block; padding:5px; margin:5px;vertical-align:text-top" class="border rounded">
+                <!-- <div>{{result.user.username}}</div> -->
+                <!-- <div style="font-size: 10px;">{{result.user.profileuser.location_station.station_name}}</div> -->
+                <div><b>{{x.Offer_key.Product_title}}</b></div>
+                <div style="font-size: 10px;">{{x.user.profileuser.location_station.station_name}}</div>
+                <!-- {{result.Product_image}} -->
+                {% if x.Offer_key.Product_image and x.Offer_key.Product_image.strip %}
+                <div style="height: 200px;width: 200px;"><img src="{{x.Offer_key.Product_image}}" width="200px" /></div>
+                
+                {% else %}
+                <div style="width: 200px;height:200px;background-color: darkgrey;padding: auto;">No Image</div>
+                {% endif %}
+                <button class="btn btn-primary"  href="#" >Exchange</button>
+                <!-- <button class="btn btn-primary" onclick="AjaxFormSubmit()" href="#" id="{{ forloop.counter }}">Like</button> -->
+            </div>
+        {% endfor%}
+    {% endfor %}
 </ul>
 {% endblock %}

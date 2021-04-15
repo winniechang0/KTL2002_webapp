@@ -16,8 +16,9 @@
             {% else %}
             <div style="width: 200px;height:200px;background-color: darkgrey;padding: auto;">No Image</div>
             {% endif %}
-            <form>
-                <input type='button' class="btn btn-primary" id="exchangebtn" value='Exchange' onclick="foo({{result.Offer_key.value}})"></input>
+            <form action="{% url 'exchange' %}" method="GET">
+                <input type="hidden" name="price" type='button' class="btn btn-primary" value='{{result.Offer_key.value}}'></input>
+                <button type="submit" name="button" class="btn btn-primary">Find Match</button>
             </form>
             <!-- <button class="btn btn-primary" onclick="AjaxFormSubmit()" href="#" id="{{ forloop.counter }}">Like</button> -->
         </div>
@@ -26,23 +27,21 @@
 
 <script>
     
-    function foo(){
+    function getPrice(price){
         // console.log('yoyo')
         $j.ajax({
-            url: "/exchange/",
+            url: "{% url 'exchange' %}",
             type:"POST",
             data: {
-                
-            },
-            complete:function(){
-                alert('Hi');
+                'price': price
             },
             success: function(data){
-                window.location.href = url;
+                window.location.href=url
             }
-        })
+        }).done(function (returned_data){
+            alert(returned_data);
+        });
     };
-
 
 </script>
 {% endblock %}
