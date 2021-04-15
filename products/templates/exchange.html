@@ -22,7 +22,13 @@
                 {% else %}
                 <div style="width: 200px;height:200px;background-color: darkgrey;padding: auto;">No Image</div>
                 {% endif %}
-                <button class="btn btn-primary"  href="#" >Exchange</button>
+                <form method="POST">
+                    <input type="hidden" name="offer_provide" value={{offer_id}}>
+                    <input type="hidden" name="offer_request" value={{x.id}}>
+
+                    <button class="btn btn-primary" href="#" type="submit">Exchange</button>
+
+                </form>
                 <!-- <button class="btn btn-primary" onclick="AjaxFormSubmit()" href="#" id="{{ forloop.counter }}">Like</button> -->
             </div>
         {% endfor%}

@@ -18,6 +18,7 @@
             {% endif %}
             <form action="{% url 'exchange' %}" method="GET">
                 <input type="hidden" name="price" type='button' class="btn btn-primary" value='{{result.Offer_key.value}}'></input>
+                <input type="hidden" name="offer_id" type='button' class="btn btn-primary" value='{{result.id}}'></input>
                 <button type="submit" name="button" class="btn btn-primary">Find Match</button>
             </form>
             <!-- <button class="btn btn-primary" onclick="AjaxFormSubmit()" href="#" id="{{ forloop.counter }}">Like</button> -->

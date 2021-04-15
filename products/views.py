@@ -182,13 +182,33 @@ def RequestView(request):
 
 @csrf_exempt 
 def ExchangeView(request):
+    if request.method =="POST":
+        print("==========================")
+        print(request.POST['offer_provide'])
+        print(request.POST['offer_request'])
+        a = ExchangeRequest()
+        offer_request = Offer.objects.get(id=request.POST['offer_request'])
+        offer_provide = Offer.objects.get(id=request.POST['offer_provide'])
+        
+        
+        a.status = 0
+        a.Offer_provide = offer_provide
+        a.Offer_requestfor = offer_request
+        a.user_from = request.user
+        a.user_to = offer_request.user
+        a.save()
+
+        return redirect('request')
+
     products = []
     count = 0
     value = request.GET['price'] #price
+    offer_id = request.GET['offer_id']
 
     current_user = request.user
     user_location = current_user.profileuser.location_station.station_id #location
     user_item = Offer.objects.filter(user=current_user).values_list('Offer_asin', flat=True)
+    # user_item_offer = Offer.objects.get(user=current_user,Offer_asin=)
 
     matching_score_sort = MatchingScore.objects.filter(user=current_user).order_by('-value')[:4]
     stations = Fares.objects.filter(oct_adt_fare__lte=10, src_station_id=user_location).exclude(dest_station_id=user_location).values_list('dest_station_id', flat=True)
@@ -214,5 +234,5 @@ def ExchangeView(request):
         li = df[column].tolist()
         res.append(li)
     '''
-    params = {'price': value, 'matching_score': matching_score_sort, 'products': products}
+    params = {'price': value, 'matching_score': matching_score_sort, 'products': products, 'offer_id':offer_id}
     return render(request, 'exchange.html', params)
