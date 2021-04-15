@@ -183,21 +183,20 @@ def RequestView(request):
 @csrf_exempt 
 def ExchangeView(request):
     products = []
+    count = 0
     value = request.GET['price'] #price
 
     current_user = request.user
     user_location = current_user.profileuser.location_station.station_id #location
 
-    matching_score_sort = MatchingScore.objects.filter(user=current_user).order_by('-value')[:2]
+    matching_score_sort = MatchingScore.objects.filter(user=current_user).order_by('-value')[:3]
     stations = Fares.objects.filter(oct_adt_fare__lte=10, src_station_id=user_location).exclude(dest_station_id=user_location).values_list('dest_station_id', flat=True)
-    
+
+    owners = UserProfile.objects.filter(location__in=stations).values_list('user', flat=True)
     for each in matching_score_sort:
         category = ProductCategory.objects.get(id=each.ProductCategory.id)
         asin = ProductInfo.objects.filter(Product_category_name=category, value__lte=float(value)*1.1, value__gte=float(value)*0.9).values_list('Product_asin', flat=True)
-        offer = Offer.objects.filter(Offer_asin__in = asin)
-        for o in offer:
-            if o.user.profileuser.location_station.station_id in stations:
-                products.append(Offer.objects.filter(user=o.user, Offer_asin__in=asin).exclude(user=current_user)[:3])
+        products.append(Offer.objects.filter(Offer_asin__in = asin, user__in=owners)[:3])
     #owner = Offer.objects.filter(Offer_asin__in = asin).values_list('user', flat=True)
 
     # for o in owner:
@@ -214,5 +213,5 @@ def ExchangeView(request):
         li = df[column].tolist()
         res.append(li)
     '''
-    params = {'price': value, 'matching_score': matching_score_sort, 'products': list(set(products))}
+    params = {'price': value, 'matching_score': matching_score_sort, 'products': products}
     return render(request, 'exchange.html', params)
