@@ -3,6 +3,7 @@ from .models import *
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt,csrf_protect #Add this
 
@@ -96,7 +97,19 @@ def LoginView(request):
         return render(request, 'login.html')
 
 def SignUpView(request):
-    return render(request, 'signup.html')
+    if request.method=="POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'signup.html',{'form':form})
 
 def LogoutView(request):
     auth_logout(request)
