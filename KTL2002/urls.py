@@ -30,5 +30,6 @@ urlpatterns = [
     path('search/', SearchPage, name='search_result'),
     path('manage/',ManageView, name='manage'),
     path('exchange/', ExchangeView, name='exchange'),
-    path('request/', RequestView, name='request')
+    path('request/', RequestView, name='request'),
+    path('wishlist/', WishListView, name='wishlist')
 ]

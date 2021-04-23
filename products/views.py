@@ -75,8 +75,6 @@ def AddOfferView(request):
                 addoffer.save()
                 print('=============================created2')
 
-            
-
     return render(request, 'add_offer.html',params)
 
 
@@ -137,6 +135,7 @@ def HomeView(request):
     return render(request,'start.html')
 
 def SearchPage(request):
+    liked = False
     if request.method == "POST":
         if request.POST.get("form_type") == 'like_form':
             print('POST got',request.POST['result'])
@@ -151,8 +150,30 @@ def SearchPage(request):
                 # print('get like')
                 if like.Like == 0:
                     like.Like = 1
+                    liked = True
+                    # try:
+                    #     like_pref = LikePreference.objects.get(User=us, Category=product.Product_category_name.id)
+                    #     print("get like_pref")
+                    #     like_pref.Count += 1
+                    #     like_pref.save()
+                    # except:
+                    #     like_pref = LikePreference()
+                    #     like_pref.User = request.user
+                    #     like_pref.Category = product.Product_category_name.id
+                    #     like_pref.Count = 1
+                    #     like_pref.save()
                 else:
                     like.Like = 0
+                    # try:
+                    #     like_pref = LikePreference.objects.get(User=us, Category=product.Product_category_name.id)
+                    #     like_pref.Count -= 1
+                    #     like_pref.save()
+                    # except:
+                    #     like_pref = LikePreference()
+                    #     like_pref.User = request.user
+                    #     like_pref.Category = product.Product_category_name.id
+                    #     like_pref.Count = 0
+                    #     like_pref.save()
                 like.save()
             except:
                 like = Likes()
@@ -160,6 +181,21 @@ def SearchPage(request):
                 like.Like = 1
                 like.Offer = Offer.objects.get(Offer_asin = request.POST['result'],user=request.POST['user_object'])
                 like.save()
+                liked = True
+
+            # if liked:
+            #     try:
+            #         like_pref = LikePreference.objects.get(User=request.user, Category=product.Product_category_name)
+            #         print("get like_pref")
+            #         like_pref.Count += 1
+            #         like_pref.save()
+            #     except:
+            #         like_pref = LikePreference()
+            #         like_pref.User = request.user
+            #         like_pref.Category = product.Product_category_name
+            #         like_pref.Count = 1
+            #         like_pref.save()
+
         elif request.POST.get("form_type") == 'wishlist_form':
             print('POST got',request.POST['result'])
             print('POST got', request.POST['user_object'])
@@ -182,6 +218,32 @@ def SearchPage(request):
                 wish.Wish = 1
                 wish.Offer = Offer.objects.get(Offer_asin = request.POST['result'],user=request.POST['user_object'])
                 wish.save()
+    if liked:
+        try:
+            like_pref = LikePreference.objects.get(User=request.user, Category=product.Product_category_name)
+            print("get like_pref")
+            like_pref.Count += 1
+            like_pref.save()
+        except:
+            like_pref = LikePreference()
+            like_pref.User = request.user
+            like_pref.Category = product.Product_category_name
+            like_pref.Count = 1
+            like_pref.save()
+        finally:
+            print("Error")
+    else:
+        try:
+            like_pref = LikePreference.objects.get(User=request.user, Category=product.Product_category_name)
+            print("get like_pref")
+            like_pref.Count -= 1
+            like_pref.save()
+        except:
+            like_pref = LikePreference()
+            like_pref.User = request.user
+            like_pref.Category = product.Product_category_name
+            like_pref.Count = 0
+            like_pref.save()
     srh = request.GET['query']
     products = ProductInfo.objects.filter(Product_title__icontains=srh).values_list('Product_asin', flat=True)
     # for each in products:
@@ -226,7 +288,6 @@ def ExchangeView(request):
         a = ExchangeRequest()
         offer_request = Offer.objects.get(id=request.POST['offer_request'])
         offer_provide = Offer.objects.get(id=request.POST['offer_provide'])
-        
         
         a.status = 0
         a.Offer_provide = offer_provide
@@ -273,3 +334,8 @@ def ExchangeView(request):
     
     params = {'price': value, 'matching_score': matching_score_sort, 'products': products, 'offer_id':offer_id}
     return render(request, 'exchange.html', params)
+
+def WishListView(request):
+    mWishList = Wish.objects.filter(User=request.user)
+    params = {'wishlist': mWishList}
+    return render(request, 'wishlist.html', params)

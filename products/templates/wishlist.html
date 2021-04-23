@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<h1>My Wish List</h1>
+{% for item in wishlist%}
+<div style="width:250px;height: 308; display: inline-block; padding:5px; margin:5px;vertical-align:text-top" class="border rounded">
+    <!-- <div>{{result.user.username}}</div> -->
+    <!-- <div style="font-size: 10px;">{{result.user.profileuser.location_station.station_name}}</div> -->
+    <div>{{item.Offer.user.username}}</div>
+    <div style="font-size: 10px;">{{item.Offer.user.profileuser.location_station.station_name}}</div>
+    <div><b>{{item.Offer.Offer_key.Product_title}}</b></div>
+    <!-- {{result.Product_image}} -->
+    {% if item.Offer.Offer_key.Product_image and item.Offer.Offer_key.Product_image.strip %}
+    <div style="height: 200px;width: 200px;"><img src="{{item.Offer.Offer_key.Product_image}}" width="200px" /></div>
+    
+    {% else %}
+    <div style="width: 200px;height:200px;background-color: darkgrey;padding: auto;">No Image</div>
+    {% endif %}
+    
+    <!-- <button class="btn btn-primary" onclick="AjaxFormSubmit()" href="#" id="{{ forloop.counter }}">Like</button> -->
+</div>
+{% endfor%}
+{% endblock %}
