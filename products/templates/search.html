@@ -19,13 +19,27 @@
             {% csrf_token %}
             <input type="hidden" name="result" value='{{result.Offer_key.Product_asin}}'/>
             <input type="hidden" name="user_object" value='{{result.user.id}}' />
+            <input type="hidden" name="form_type" value="like_form" />
             {% if result.id in like_list %}
             <input type="submit" value="Unlike" class="btn btn-primary">
             {% else %}
             <input type="submit" value="Like" class="btn btn-primary">
             {% endif %}
         </form>
-        <button name="button" class="btn btn-primary">Add to Wish List</button>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="result" value="{{result.Offer_key.Product_asin}}" />
+            <input type="hidden" name="user_object" value="{{result.user.id}}" />
+            <input type="hidden" name="form_type" value="wishlist_form" />
+            {% if result.id in wish_list %}
+            <input type="submit" value="Remove from Wish List" class="btn btn-primary">
+            {% else %}
+            <input type="submit" value="Add to Wish List" class="btn btn-primary">
+            {% endif %}
+            
+        </form>
+        <!-- <button name="button" class="btn btn-primary">Add to Wish List</button> -->
     </div>
     {% endfor %}
 </ul>

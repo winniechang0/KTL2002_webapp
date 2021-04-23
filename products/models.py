@@ -20,10 +20,6 @@ class Product(models.Model):
     title = models.CharField(max_length=50)
     value = models.IntegerField()
 
-class Wish(models.Model):
-    title = models.CharField(max_length=50)
-    date = models.DateTimeField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Fares(models.Model):
     src_station_id = models.IntegerField()
@@ -78,6 +74,13 @@ class ExchangeRequest(models.Model):
     Offer_requestfor = models.ForeignKey(Offer,on_delete=models.CASCADE,related_name="Offer_requestfor")
     Offer_provide = models.ForeignKey(Offer, on_delete=models.CASCADE, related_name="Offer_provide")
     status = models.IntegerField()
+
+class Wish(models.Model):
+    #title = models.CharField(max_length=50)
+    # date = models.DateTimeField()
+    Wish = models.IntegerField(default=0)
+    User = models.ForeignKey(User, on_delete=models.CASCADE)
+    Offer = models.ForeignKey(Offer, on_delete=models.CASCADE)
 
 
 

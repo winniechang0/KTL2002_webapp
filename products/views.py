@@ -138,27 +138,50 @@ def HomeView(request):
 
 def SearchPage(request):
     if request.method == "POST":
-        print('POST got',request.POST['result'])
-        try:
-            product = ProductInfo.objects.get(Product_asin=request.POST['result'])
-            # print('get product')
-            us = User.objects.get(id = request.POST['user_object'])
-            # print('get us')
-            offer = Offer.objects.get(Offer_key=product,user =us)
-            # print('get offer')
-            like = Likes.objects.get(Offer=offer,User=request.user)
-            # print('get like')
-            if like.Like == 0:
+        if request.POST.get("form_type") == 'like_form':
+            print('POST got',request.POST['result'])
+            try:
+                product = ProductInfo.objects.get(Product_asin=request.POST['result'])
+                # print('get product')
+                us = User.objects.get(id = request.POST['user_object'])
+                # print('get us')
+                offer = Offer.objects.get(Offer_key=product,user =us)
+                # print('get offer')
+                like = Likes.objects.get(Offer=offer,User=request.user)
+                # print('get like')
+                if like.Like == 0:
+                    like.Like = 1
+                else:
+                    like.Like = 0
+                like.save()
+            except:
+                like = Likes()
+                like.User = request.user
                 like.Like = 1
-            else:
-                like.Like = 0
-            like.save()
-        except:
-            like = Likes()
-            like.User = request.user
-            like.Like = 1
-            like.Offer = Offer.objects.get(Offer_asin = request.POST['result'],user=request.POST['user_object'])
-            like.save()
+                like.Offer = Offer.objects.get(Offer_asin = request.POST['result'],user=request.POST['user_object'])
+                like.save()
+        elif request.POST.get("form_type") == 'wishlist_form':
+            print('POST got',request.POST['result'])
+            print('POST got', request.POST['user_object'])
+            try:
+                product = ProductInfo.objects.get(Product_asin=request.POST['result'])
+                # print('get product')
+                us = User.objects.get(id = request.POST['user_object'])
+                # print('get us')
+                offer = Offer.objects.get(Offer_key=product,user =us)
+                # print('get offer')
+                wish = Wish.objects.get(Offer=offer,User=request.user)
+                if wish.Wish == 0:
+                    wish.Wish = 1
+                else:
+                    wish.Wish = 0
+                wish.save()
+            except:
+                wish = Wish()
+                wish.User = request.user
+                wish.Wish = 1
+                wish.Offer = Offer.objects.get(Offer_asin = request.POST['result'],user=request.POST['user_object'])
+                wish.save()
     srh = request.GET['query']
     products = ProductInfo.objects.filter(Product_title__icontains=srh).values_list('Product_asin', flat=True)
     # for each in products:
@@ -171,13 +194,14 @@ def SearchPage(request):
     # print('===================================================================')
     location_sort = Fares.objects.filter(src_station_id=request.user.profileuser.location_station.station_id).order_by('oct_adt_fare')
 
-    print(location_sort)
+    #print(location_sort)
     like_ = Likes.objects.filter(User=request.user,Like=1).values_list('Offer',flat = True)
     like_list = list(like_)
     # print('=============like list:',like_list)
+    wish_ = Wish.objects.filter(User=request.user, Wish=1).values_list('Offer', flat = True)
+    wish_list = list(wish_)
 
-
-    params = {'products':offer, 'search':srh, 'sorted_location':location_sort,'like_list':like_list}
+    params = {'products':offer, 'search':srh, 'sorted_location':location_sort,'like_list':like_list, 'wish_list': wish_list}
 
     return render(request,'search.html', params)
 
@@ -231,21 +255,21 @@ def ExchangeView(request):
         category = ProductCategory.objects.get(id=each.ProductCategory.id)
         asin = ProductInfo.objects.filter(Product_category_name=category, value__lte=float(value)*1.1, value__gte=float(value)*0.9).exclude(Product_asin__in=user_item).values_list('Product_asin', flat=True)
         products.append(Offer.objects.filter(Offer_asin__in = asin, user__in=owners)[:3])
-    #owner = Offer.objects.filter(Offer_asin__in = asin).values_list('user', flat=True)
+    # owner = Offer.objects.filter(Offer_asin__in = asin).values_list('user', flat=True)
 
-    # for o in owner:
-    #    x = User.objects.get(id=o)
-        # if (x.profileuser.location in stations):
-        #    products.append(Offer.objects.filter(user=x).values_list('Offer_asin', flat=True))
+    #  for o in owner:
+    #     x = User.objects.get(id=o)
+    #      if (x.profileuser.location in stations):
+    #         products.append(Offer.objects.filter(user=x).values_list('Offer_asin', flat=True))
     
-    #params = {'destinations': stations, 'matching_score': matching_score_sort, 'products':products}
-    '''
-    df = pd.DataFrame(products)
-    df = df.drop_duplicates(keep='first')
-    res = []
-    for column in df.columns:
-        li = df[column].tolist()
-        res.append(li)
-    '''
+    # params = {'destinations': stations, 'matching_score': matching_score_sort, 'products':products}
+    
+    # df = pd.DataFrame(products)
+    # df = df.drop_duplicates(keep='first')
+    # res = []
+    # for column in df.columns:
+    #     li = df[column].tolist()
+    #     res.append(li)
+    
     params = {'price': value, 'matching_score': matching_score_sort, 'products': products, 'offer_id':offer_id}
     return render(request, 'exchange.html', params)
