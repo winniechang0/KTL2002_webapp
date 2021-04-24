@@ -21,6 +21,7 @@ from django.db.models import Q
 
 # import pycmf
 import pandas as pd
+import math
 # import numpy as numpyfrom pathlib import Path        
     
 
@@ -134,6 +135,76 @@ def HomeView(request):
     # d.save()
     return render(request,'start.html')
 
+def update_customer_preference(user, category):
+    like_p = LikePreference()
+    wish_p = WishPreference()
+    exchange_p = ExchangePreference()
+
+    p_like = 0
+    p_wish = 0
+    p_exchange = 0
+
+    mLikePref = LikePreference.objects.filter(User=user).order_by('-Count')
+    mWishPref = WishPreference.objects.filter(User=user).order_by('-Wish')
+    mExchangePref = ExchangePreference.objects.filter(User=user).order_by('-Exchange')
+    
+    max_like = mLikePref[0].Count if mLikePref != None else 0
+    min_like = mLikePref[28].Count if len(mLikePref) == 29 else 0
+
+    max_wish = mWishPref[0].Wish if mLikePref != None else 0
+    min_wish = mWishPref[28].Wish if len(mWishPref) == 29 else 0
+
+    max_exchange = mExchangePref[0].Exchange if mExchangePref != None else 0
+    min_exchange = mExchangePref[28].Exchange if len(mExchangePref) == 29 else 0
+
+    try:
+        like_p = LikePreference.objects.get(User=user, Category_id=category)
+        p_like = like_p.Count
+    except:
+        p_like = 0
+    
+    try:
+        wish_p  = WishPreference.objects.get(User=user, Category_id=category)
+        p_wish = wish_p.Wish
+    except:
+        p_wish = 0
+
+    try:
+        exchange_p = ExchangePreference.objects.get(User=user, Category_id=category)
+        p_exchange = exchange_p.Exchange
+    except:
+        p_exchange = 0
+    p = get_p(p_like, max_like, min_like) + get_p(p_wish, max_wish, min_wish) + get_p(p_exchange, max_exchange, min_exchange)
+    cust_pref = CustomerPreference_model.objects.get(User=user, ProductCategory=category)
+    cust_pref.value = p
+    cust_pref.save()
+
+def update_matching_score(user, category):
+    p = []
+    a = []
+
+    pa = 0
+    pp = 0
+    aa = 0
+    s = 0
+    mCustPref = CustomerPreference_model.objects.filter(User=user)
+    mProdAsso = ProductAssociation_matrix.objects.filter(Src_Product_Cat=category)
+    mMatchingScore = MatchingScore.objects.get(user=user, ProductCategory=category)
+    
+    for i in mCustPref:
+        p.append(i.value)
+    for j in mProdAsso:
+        a.append(j.value)
+    
+    for i in range(len(p)):
+        pa += p[i]*a[i]
+        pp += p[i]*p[i]
+        aa += a[i]*a[i] 
+
+    s = pa / (math.sqrt(pp)*math.sqrt(aa))
+    mMatchingScore.value = s
+    mMatchingScore.save()
+
 def SearchPage(request):
     liked = False
     unliked = False
@@ -194,18 +265,23 @@ def SearchPage(request):
                 wish.Offer = Offer.objects.get(Offer_asin = request.POST['result'],user=request.POST['user_object'])
                 wish.save()
                 wished = True
+
     if liked:
         try:
             like_pref = LikePreference.objects.get(User=request.user, Category=product.Product_category_name)
             # print("get like_pref")
             like_pref.Count += 1
             like_pref.save()
+            update_customer_preference(request.user, product.Product_category_name)
+            update_matching_score(request.user, product.Product_category_name)
         except:
             like_pref = LikePreference()
             like_pref.User = request.user
             like_pref.Category = product.Product_category_name
             like_pref.Count = 1
             like_pref.save()
+            update_customer_preference(request.user, product.Product_category_name)
+            update_matching_score(request.user, product.Product_category_name)
         finally:
             print("Error")
     elif unliked:
@@ -214,35 +290,47 @@ def SearchPage(request):
             # print("get like_pref")
             like_pref.Count -= 1
             like_pref.save()
+            update_customer_preference(request.user, product.Product_category_name)
+            update_matching_score(request.user, product.Product_category_name)
         except:
             like_pref = LikePreference()
             like_pref.User = request.user
             like_pref.Category = product.Product_category_name
             like_pref.Count = 0
             like_pref.save()
-    
+            update_customer_preference(request.user, product.Product_category_name)
+            update_matching_score(request.user, product.Product_category_name)
     if wished:
         try:
             wish_pref = WishPreference.objects.get(User=request.user, Category=product.Product_category_name)
-            wish_pref += 1
+            wish_pref.Wish += 1
             wish_pref.save()
+            update_customer_preference(request.user, product.Product_category_name)
+            update_matching_score(request.user, product.Product_category_name)
         except:
             wish_pref = WishPreference()
             wish_pref.User = request.user
             wish_pref.Category = product.Product_category_name
             wish_pref.Wish = 1
             wish_pref.save()
+            update_customer_preference(request.user, product.Product_category_name)
+            update_matching_score(request.user, product.Product_category_name)
     elif unwished:
         try:
             wish_pref = WishPreference.objects.get(User=request.user, Category=product.Product_category_name)
-            wish_pref -= 1
+            wish_pref.Wish -= 1
             wish_pref.save()
+            update_customer_preference(request.user, product.Product_category_name)
+            update_matching_score(request.user, product.Product_category_name)
         except:
             wish_pref = WishPreference()
             wish_pref.User = request.user
             wish_pref.Category = product.Product_category_name
             wish_pref.Wish = 0
             wish_pref.save()
+            update_customer_preference(request.user, product.Product_category_name)
+            update_matching_score(request.user, product.Product_category_name)
+
     srh = request.GET['query']
     products = ProductInfo.objects.filter(Product_title__icontains=srh).values_list('Product_asin', flat=True)
     # for each in products:
@@ -296,16 +384,20 @@ def ExchangeView(request):
         a.save()
 
         try:
-            exchange_pref = ExchangePreference.objects.get(User=request.user, Category=product.Product_category_name)
+            exchange_pref = ExchangePreference.objects.get(User=request.user, Category=offer_request.Offer_key.Product_category_name)
             # print("get like_pref")
             exchange_pref.Exchange += 1
             exchange_pref.save()
+            update_customer_preference(request.user, offer_request.Offer_key.Product_category_name)
+            update_matching_score(request.user, offer_request.Offer_key.Product_category_name)
         except:
             exchange_pref = ExchangePreference()
             exchange_pref.User = request.user
             exchange_pref.Category = offer_request.Offer_key.Product_category_name
             exchange_pref.Exchange = 1
             exchange_pref.save()
+            update_customer_preference(request.user, offer_request.Offer_key.Product_category_name)
+            update_matching_score(request.user, offer_request.Offer_key.Product_category_name)
 
         return redirect('request')
 
@@ -319,14 +411,14 @@ def ExchangeView(request):
     user_item = Offer.objects.filter(user=current_user).values_list('Offer_asin', flat=True)
     # user_item_offer = Offer.objects.get(user=current_user,Offer_asin=)
 
-    matching_score_sort = MatchingScore.objects.filter(user=current_user).order_by('-value')[:4]
+    matching_score_sort = MatchingScore.objects.filter(user=current_user).order_by('-value')[:5]
     stations = Fares.objects.filter(oct_adt_fare__lte=10, src_station_id=user_location).exclude(dest_station_id=user_location).values_list('dest_station_id', flat=True)
 
     owners = UserProfile.objects.filter(location__in=stations).values_list('user', flat=True)
     for each in matching_score_sort:
         category = ProductCategory.objects.get(id=each.ProductCategory.id)
         asin = ProductInfo.objects.filter(Product_category_name=category, value__lte=float(value)*1.1, value__gte=float(value)*0.9).exclude(Product_asin__in=user_item).values_list('Product_asin', flat=True)
-        products.append(Offer.objects.filter(Offer_asin__in = asin, user__in=owners)[:3])
+        products.append(Offer.objects.filter(Offer_asin__in = asin, user__in=owners)[:4])
     # owner = Offer.objects.filter(Offer_asin__in = asin).values_list('user', flat=True)
 
     #  for o in owner:
@@ -356,7 +448,8 @@ def get_p(p, max_p, min_p):
 
 def DemoView(request):
 
-    customer_preference = []
+    p = []
+    a = []
 
     like_p = LikePreference()
     wish_p = WishPreference()
@@ -366,9 +459,18 @@ def DemoView(request):
     p_wish = 0
     p_exchange = 0
 
+    pa = 0
+    pp = 0
+    aa = 0
+    s = 0
+
     mLikePref = LikePreference.objects.filter(User=request.user).order_by('-Count')
     mWishPref = WishPreference.objects.filter(User=request.user).order_by('-Wish')
     mExchangePref = ExchangePreference.objects.filter(User=request.user).order_by('-Exchange')
+
+    mCustPref = CustomerPreference_model.objects.filter(User=request.user)
+    mProdAsso = ProductAssociation_matrix.objects.filter(Src_Product_Cat=4125)
+    mMatchingScore = MatchingScore.objects.get(user=request.user, ProductCategory=4125)
     
     max_like = mLikePref[0].Count if mLikePref != None else 0
     min_like = mLikePref[28].Count if len(mLikePref) == 29 else 0
@@ -379,31 +481,22 @@ def DemoView(request):
     max_exchange = mExchangePref[0].Exchange if mExchangePref != None else 0
     min_exchange = mExchangePref[28].Exchange if len(mExchangePref) == 29 else 0
 
-    for i in range(4122,4149):
-        category = ProductCategory.objects.get(id=i)
-        try:
-            like_p = LikePreference.objects.get(User=request.user, Category_id=category)
-            p_like = like_p.Count
-        except:
-            p_like = 0
-        
-        try:
-            wish_p  = WishPreference.objects.get(User=request.user, Category_id=category)
-            p_wish = wish_p.Wish
-        except:
-            p_wish = 0
-
-        try:
-            exchange_p = ExchangePreference.objects.get(User=request.user, Category_id=category)
-            p_exchange = exchange_p.Exchange
-        except:
-            p_exchange = 0
-
-        customer_preference.append(get_p(p_like, max_like, min_like) + get_p(p_wish, max_wish, min_wish) + get_p(p_exchange, max_exchange, min_exchange))
+    for i in mCustPref:
+        p.append(i.value)
+    for j in mProdAsso:
+        a.append(j.value)
+    
+    for i in range(len(p)):
+        pa += p[i]*a[i]
+        pp += p[i]*p[i]
+        aa += a[i]*a[i] 
+    s = pa / (math.sqrt(pp)*math.sqrt(aa))
+    mMatchingScore.value = s
+    mMatchingScore.save()
 
     params = {'max_like': max_like, 'min_like': min_like, 
                 'max_wish': max_wish, 'min_wish': min_wish, 
                 'max_exchange': max_exchange, 'min_exchange': min_exchange,
-                'customer_preference': customer_preference}
+                'matching_score': s}
     
     return render(request, 'demo.html', params)
