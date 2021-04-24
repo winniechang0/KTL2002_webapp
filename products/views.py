@@ -148,13 +148,13 @@ def update_customer_preference(user, category):
     mWishPref = WishPreference.objects.filter(User=user).order_by('-Wish')
     mExchangePref = ExchangePreference.objects.filter(User=user).order_by('-Exchange')
     
-    max_like = mLikePref[0].Count if mLikePref != None else 0
+    max_like = mLikePref[0].Count if len(mLikePref) > 0 else 0
     min_like = mLikePref[28].Count if len(mLikePref) == 29 else 0
 
-    max_wish = mWishPref[0].Wish if mLikePref != None else 0
+    max_wish = mWishPref[0].Wish if len(mLikePref) > 0 else 0
     min_wish = mWishPref[28].Wish if len(mWishPref) == 29 else 0
 
-    max_exchange = mExchangePref[0].Exchange if mExchangePref != None else 0
+    max_exchange = mExchangePref[0].Exchange if len(mExchangePref) > 0 else 0
     min_exchange = mExchangePref[28].Exchange if len(mExchangePref) == 29 else 0
 
     try:
@@ -444,7 +444,10 @@ def WishListView(request):
     return render(request, 'wishlist.html', params)
 
 def get_p(p, max_p, min_p):
-    return (p - min_p) / (max_p - min_p)
+    if max_p - min_p > 0:
+        return (p - min_p) / (max_p - min_p)
+    else:
+        return 0
 
 def DemoView(request):
 
