@@ -11,10 +11,10 @@
     <div><b>{{item.Offer.Offer_key.Product_title}}</b></div>
     <!-- {{result.Product_image}} -->
     {% if item.Offer.Offer_key.Product_image and item.Offer.Offer_key.Product_image.strip %}
-    <div style="height: 200px;width: 200px;"><img src="{{item.Offer.Offer_key.Product_image}}" width="200px" /></div>
+    <div style="height: 100px;width: 100px;"><img src="{{item.Offer.Offer_key.Product_image}}" width="100px" /></div>
     
     {% else %}
-    <div style="width: 200px;height:200px;background-color: darkgrey;padding: auto;">No Image</div>
+    <div style="width: 100px;height:100px;background-color: darkgrey;padding: auto;">No Image</div>
     {% endif %}
     
     <!-- <button class="btn btn-primary" onclick="AjaxFormSubmit()" href="#" id="{{ forloop.counter }}">Like</button> -->
