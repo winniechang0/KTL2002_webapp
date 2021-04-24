@@ -31,5 +31,6 @@ urlpatterns = [
     path('manage/',ManageView, name='manage'),
     path('exchange/', ExchangeView, name='exchange'),
     path('request/', RequestView, name='request'),
-    path('wishlist/', WishListView, name='wishlist')
+    path('wishlist/', WishListView, name='wishlist'),
+    path('demo/', DemoView, name='demo')
 ]

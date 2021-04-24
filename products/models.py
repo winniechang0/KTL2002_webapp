@@ -87,6 +87,14 @@ class LikePreference(models.Model):
     Category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
     Count = models.IntegerField(default=0)
 
+class WishPreference(models.Model):
+    User = models.ForeignKey(User, on_delete=models.CASCADE)
+    Category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
+    Wish = models.IntegerField(default=0)
 
+class ExchangePreference(models.Model):
+    User = models.ForeignKey(User, on_delete=models.CASCADE)
+    Category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
+    Exchange = models.IntegerField(default=0)
 
 

@@ -136,6 +136,10 @@ def HomeView(request):
 
 def SearchPage(request):
     liked = False
+    unliked = False
+
+    wished = False
+    unwished = False
     if request.method == "POST":
         if request.POST.get("form_type") == 'like_form':
             print('POST got',request.POST['result'])
@@ -151,29 +155,11 @@ def SearchPage(request):
                 if like.Like == 0:
                     like.Like = 1
                     liked = True
-                    # try:
-                    #     like_pref = LikePreference.objects.get(User=us, Category=product.Product_category_name.id)
-                    #     print("get like_pref")
-                    #     like_pref.Count += 1
-                    #     like_pref.save()
-                    # except:
-                    #     like_pref = LikePreference()
-                    #     like_pref.User = request.user
-                    #     like_pref.Category = product.Product_category_name.id
-                    #     like_pref.Count = 1
-                    #     like_pref.save()
+
                 else:
                     like.Like = 0
-                    # try:
-                    #     like_pref = LikePreference.objects.get(User=us, Category=product.Product_category_name.id)
-                    #     like_pref.Count -= 1
-                    #     like_pref.save()
-                    # except:
-                    #     like_pref = LikePreference()
-                    #     like_pref.User = request.user
-                    #     like_pref.Category = product.Product_category_name.id
-                    #     like_pref.Count = 0
-                    #     like_pref.save()
+                    unliked = True
+
                 like.save()
             except:
                 like = Likes()
@@ -182,19 +168,6 @@ def SearchPage(request):
                 like.Offer = Offer.objects.get(Offer_asin = request.POST['result'],user=request.POST['user_object'])
                 like.save()
                 liked = True
-
-            # if liked:
-            #     try:
-            #         like_pref = LikePreference.objects.get(User=request.user, Category=product.Product_category_name)
-            #         print("get like_pref")
-            #         like_pref.Count += 1
-            #         like_pref.save()
-            #     except:
-            #         like_pref = LikePreference()
-            #         like_pref.User = request.user
-            #         like_pref.Category = product.Product_category_name
-            #         like_pref.Count = 1
-            #         like_pref.save()
 
         elif request.POST.get("form_type") == 'wishlist_form':
             print('POST got',request.POST['result'])
@@ -209,8 +182,10 @@ def SearchPage(request):
                 wish = Wish.objects.get(Offer=offer,User=request.user)
                 if wish.Wish == 0:
                     wish.Wish = 1
+                    wished = True
                 else:
                     wish.Wish = 0
+                    unwished = True
                 wish.save()
             except:
                 wish = Wish()
@@ -218,10 +193,11 @@ def SearchPage(request):
                 wish.Wish = 1
                 wish.Offer = Offer.objects.get(Offer_asin = request.POST['result'],user=request.POST['user_object'])
                 wish.save()
+                wished = True
     if liked:
         try:
             like_pref = LikePreference.objects.get(User=request.user, Category=product.Product_category_name)
-            print("get like_pref")
+            # print("get like_pref")
             like_pref.Count += 1
             like_pref.save()
         except:
@@ -232,10 +208,10 @@ def SearchPage(request):
             like_pref.save()
         finally:
             print("Error")
-    else:
+    elif unliked:
         try:
             like_pref = LikePreference.objects.get(User=request.user, Category=product.Product_category_name)
-            print("get like_pref")
+            # print("get like_pref")
             like_pref.Count -= 1
             like_pref.save()
         except:
@@ -244,6 +220,29 @@ def SearchPage(request):
             like_pref.Category = product.Product_category_name
             like_pref.Count = 0
             like_pref.save()
+    
+    if wished:
+        try:
+            wish_pref = WishPreference.objects.get(User=request.user, Category=product.Product_category_name)
+            wish_pref += 1
+            wish_pref.save()
+        except:
+            wish_pref = WishPreference()
+            wish_pref.User = request.user
+            wish_pref.Category = product.Product_category_name
+            wish_pref.Wish = 1
+            wish_pref.save()
+    elif unwished:
+        try:
+            wish_pref = WishPreference.objects.get(User=request.user, Category=product.Product_category_name)
+            wish_pref -= 1
+            wish_pref.save()
+        except:
+            wish_pref = WishPreference()
+            wish_pref.User = request.user
+            wish_pref.Category = product.Product_category_name
+            wish_pref.Wish = 0
+            wish_pref.save()
     srh = request.GET['query']
     products = ProductInfo.objects.filter(Product_title__icontains=srh).values_list('Product_asin', flat=True)
     # for each in products:
@@ -296,6 +295,18 @@ def ExchangeView(request):
         a.user_to = offer_request.user
         a.save()
 
+        try:
+            exchange_pref = ExchangePreference.objects.get(User=request.user, Category=product.Product_category_name)
+            # print("get like_pref")
+            exchange_pref.Exchange += 1
+            exchange_pref.save()
+        except:
+            exchange_pref = ExchangePreference()
+            exchange_pref.User = request.user
+            exchange_pref.Category = offer_request.Offer_key.Product_category_name
+            exchange_pref.Exchange = 1
+            exchange_pref.save()
+
         return redirect('request')
 
     products = []
@@ -339,3 +350,60 @@ def WishListView(request):
     mWishList = Wish.objects.filter(User=request.user)
     params = {'wishlist': mWishList}
     return render(request, 'wishlist.html', params)
+
+def get_p(p, max_p, min_p):
+    return (p - min_p) / (max_p - min_p)
+
+def DemoView(request):
+
+    customer_preference = []
+
+    like_p = LikePreference()
+    wish_p = WishPreference()
+    exchange_p = ExchangePreference()
+
+    p_like = 0
+    p_wish = 0
+    p_exchange = 0
+
+    mLikePref = LikePreference.objects.filter(User=request.user).order_by('-Count')
+    mWishPref = WishPreference.objects.filter(User=request.user).order_by('-Wish')
+    mExchangePref = ExchangePreference.objects.filter(User=request.user).order_by('-Exchange')
+    
+    max_like = mLikePref[0].Count
+    min_like = mLikePref[28].Count if len(mLikePref) == 29 else 0
+
+    max_wish = mWishPref[0].Wish
+    min_wish = mWishPref[28].Wish if len(mWishPref) == 29 else 0
+
+    max_exchange = mExchangePref[0].Exchange
+    min_exchange = mExchangePref[28].Exchange if len(mExchangePref) == 29 else 0
+
+    for i in range(4122,4149):
+        category = ProductCategory.objects.get(id=i)
+        try:
+            like_p = LikePreference.objects.get(User=request.user, Category_id=category)
+            p_like = like_p.Count
+        except:
+            p_like = 0
+        
+        try:
+            wish_p  = WishPreference.objects.get(User=request.user, Category_id=category)
+            p_wish = wish_p.Wish
+        except:
+            p_wish = 0
+
+        try:
+            exchange_p = ExchangePreference.objects.get(User=request.user, Category_id=category)
+            p_exchange = exchange_p.Exchange
+        except:
+            p_exchange = 0
+
+        customer_preference.append(get_p(p_like, max_like, min_like) + get_p(p_wish, max_wish, min_wish) + get_p(p_exchange, max_exchange, min_exchange))
+
+    params = {'max_like': max_like, 'min_like': min_like, 
+                'max_wish': max_wish, 'min_wish': min_wish, 
+                'max_exchange': max_exchange, 'min_exchange': min_exchange,
+                'customer_preference': customer_preference}
+    
+    return render(request, 'demo.html', params)

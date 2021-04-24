@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<h1>Demo Page</h1>
+    <div>max_like: {{ max_like }}</div>
+    <div>min_like: {{ min_like }}</div>
+    <div>max_wish: {{ max_wish }}</div>
+    <div>min_wish: {{ min_wish }}</div>
+    <div>max_exchange: {{ max_exchange }}</div>
+    <div>min_exchange: {{ min_exchange }}</div>
+
+    {% for each in customer_preference%}
+    <div>{{each}}</div>
+    {% endfor%}
+{% endblock %}
