@@ -370,13 +370,13 @@ def DemoView(request):
     mWishPref = WishPreference.objects.filter(User=request.user).order_by('-Wish')
     mExchangePref = ExchangePreference.objects.filter(User=request.user).order_by('-Exchange')
     
-    max_like = mLikePref[0].Count
+    max_like = mLikePref[0].Count if mLikePref != None else 0
     min_like = mLikePref[28].Count if len(mLikePref) == 29 else 0
 
-    max_wish = mWishPref[0].Wish
+    max_wish = mWishPref[0].Wish if mLikePref != None else 0
     min_wish = mWishPref[28].Wish if len(mWishPref) == 29 else 0
 
-    max_exchange = mExchangePref[0].Exchange
+    max_exchange = mExchangePref[0].Exchange if mExchangePref != None else 0
     min_exchange = mExchangePref[28].Exchange if len(mExchangePref) == 29 else 0
 
     for i in range(4122,4149):
