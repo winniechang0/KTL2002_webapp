@@ -360,7 +360,19 @@ def ManageView(request):
     params = {'Offer':myOffer}
     return render(request, 'manage.html',params)
 
+@csrf_exempt 
 def RequestView(request):
+    if request.method == "POST":
+        if 'accept' in request.POST:
+            request_ = ExchangeRequest.objects.get(id = request.POST['accept'])
+            request_.status = 1
+            request_.save()
+        elif 'decline' in request.POST:
+            request_ = ExchangeRequest.objects.get(id = request.POST['accept'])
+            request_.status = 2
+            request_.save()
+        else:
+            print('error!')
     received = ExchangeRequest.objects.filter(user_to=request.user)
     sent = ExchangeRequest.objects.filter(user_from=request.user)
     params = {'received':received, 'sent':sent}

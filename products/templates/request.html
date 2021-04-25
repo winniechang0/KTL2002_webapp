@@ -4,7 +4,7 @@
 <div>
     <div>
         <H1>Received Request</H1>
-            {% for each in received %}
+            {% for each in received|dictsort:"status" %}
                 <div style="display: inline-block; padding:5px; margin:5px;vertical-align:text-top" class="border rounded">
                     <div>{{each.user_from.username}}</div>
                     <div>{{each.user_from.profileuser.location_station.station_name}}</div>
@@ -35,10 +35,26 @@
                         </div>
                     </div>
                     <div style="display:flex;justify-content: space-between;">
-                        <div>
-                            <button type="button" class="btn btn-primary">Accept</button>
-                            <button type="button" class="btn btn-secondary">Decline</button>
+                        {% if each.status == 0 %}
+                        <div style="display:flex;">
+                            <form method="POST">
+                                <input type="hidden" name="accept" value="{{each.id}}">
+                                <button type="submit" class="btn btn-primary" >Accept</button>
+                            </form>
+                            <form method="POST">
+                                <input type="hidden" name="decline" value="{{each.id}}">
+                                <button type="submit" class="btn btn-secondary" >Decline</button>
+                            </form>
                         </div>
+                        {% elif each.status == 1 %}
+                        <div>
+                            Accepted.
+                        </div>
+                        {% else %}
+                        <div>
+                            Declined.
+                        </div>
+                        {% endif %}
                         <div>
                             <button type="button" class="btn btn-primary">Chat</button>
                         </div>
