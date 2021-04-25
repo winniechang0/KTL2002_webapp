@@ -8,5 +8,10 @@
     <div>min_wish: {{ min_wish }}</div>
     <div>max_exchange: {{ max_exchange }}</div>
     <div>min_exchange: {{ min_exchange }}</div>
-    <div>matching score: {{ matching_score}}</div>
+    <h3>Matching Scores:</h3>
+    <ul>
+        {% for key, value in matching_score.items %} 
+          <li>{{key.product_category_name}} : {{value |floatformat:3 }}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

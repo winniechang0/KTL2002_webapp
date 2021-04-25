@@ -465,6 +465,7 @@ def DemoView(request):
 
     p = []
     a = []
+    matching_score = dict()
 
     like_p = LikePreference()
     wish_p = WishPreference()
@@ -482,36 +483,37 @@ def DemoView(request):
     mLikePref = LikePreference.objects.filter(User=request.user).order_by('-Count')
     mWishPref = WishPreference.objects.filter(User=request.user).order_by('-Wish')
     mExchangePref = ExchangePreference.objects.filter(User=request.user).order_by('-Exchange')
-
-    mCustPref = CustomerPreference_model.objects.filter(User=request.user)
-    mProdAsso = ProductAssociation_matrix.objects.filter(Src_Product_Cat=4125)
-    mMatchingScore = MatchingScore.objects.get(user=request.user, ProductCategory=4125)
     
-    max_like = mLikePref[0].Count if mLikePref != None else 0
+    max_like = mLikePref[0].Count if len(mLikePref) > 0 else 0
     min_like = mLikePref[28].Count if len(mLikePref) == 29 else 0
 
-    max_wish = mWishPref[0].Wish if mLikePref != None else 0
+    max_wish = mWishPref[0].Wish if len(mLikePref) > 0 else 0
     min_wish = mWishPref[28].Wish if len(mWishPref) == 29 else 0
 
-    max_exchange = mExchangePref[0].Exchange if mExchangePref != None else 0
+    max_exchange = mExchangePref[0].Exchange if len(mExchangePref) > 0 else 0
     min_exchange = mExchangePref[28].Exchange if len(mExchangePref) == 29 else 0
 
-    for i in mCustPref:
-        p.append(i.value)
-    for j in mProdAsso:
-        a.append(j.value)
-    
-    for i in range(len(p)):
-        pa += p[i]*a[i]
-        pp += p[i]*p[i]
-        aa += a[i]*a[i] 
-    s = pa / (math.sqrt(pp)*math.sqrt(aa))
-    mMatchingScore.value = s
-    mMatchingScore.save()
+    for i in range(4122, 4149):
+
+        mCustPref = CustomerPreference_model.objects.filter(User=request.user)
+        mProdAsso = ProductAssociation_matrix.objects.filter(Src_Product_Cat=i)
+        category = ProductCategory.objects.get(id=i)
+
+        for i in mCustPref:
+            p.append(i.value)
+        for j in mProdAsso:
+            a.append(j.value)
+        
+        for i in range(len(p)):
+            pa += p[i]*a[i]
+            pp += p[i]*p[i]
+            aa += a[i]*a[i] 
+        s = pa / (math.sqrt(pp)*math.sqrt(aa))
+        matching_score[category] = s
 
     params = {'max_like': max_like, 'min_like': min_like, 
                 'max_wish': max_wish, 'min_wish': min_wish, 
                 'max_exchange': max_exchange, 'min_exchange': min_exchange,
-                'matching_score': s}
+                'matching_score': matching_score}
     
     return render(request, 'demo.html', params)
