@@ -507,8 +507,11 @@ def DemoView(request):
         for i in range(len(p)):
             pa += p[i]*a[i]
             pp += p[i]*p[i]
-            aa += a[i]*a[i] 
-        s = pa / (math.sqrt(pp)*math.sqrt(aa))
+            aa += a[i]*a[i]
+        if math.sqrt(pp)*math.sqrt(aa) != 0:
+            s = pa / (math.sqrt(pp)*math.sqrt(aa))
+        else:
+            s = 0
         matching_score[category] = s
 
     params = {'max_like': max_like, 'min_like': min_like, 
