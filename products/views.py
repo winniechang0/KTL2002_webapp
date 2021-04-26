@@ -485,15 +485,28 @@ def DemoView(request):
     mExchangePref = ExchangePreference.objects.filter(User=request.user).order_by('-Exchange')
     
     max_like = mLikePref[0].Count if len(mLikePref) > 0 else 0
+    max_like_cat = mLikePref[0].Category.product_category_name
+
     min_like = mLikePref[28].Count if len(mLikePref) == 29 else 0
 
     max_wish = mWishPref[0].Wish if len(mLikePref) > 0 else 0
+    max_wish_cat = mWishPref[0].Category.product_category_name
+
     min_wish = mWishPref[28].Wish if len(mWishPref) == 29 else 0
 
     max_exchange = mExchangePref[0].Exchange if len(mExchangePref) > 0 else 0
+    max_exchange_cat = mExchangePref[0].Category.product_category_name
+
     min_exchange = mExchangePref[28].Exchange if len(mExchangePref) == 29 else 0
 
-    for i in range(4122, 4149):
+    for i in range(4133, 4135):
+        p = []
+        a = []
+
+        pa = 0
+        pp = 0
+        aa = 0
+        s = 0
 
         mCustPref = CustomerPreference_model.objects.filter(User=request.user)
         mProdAsso = ProductAssociation_matrix.objects.filter(Src_Product_Cat=i)
@@ -517,6 +530,6 @@ def DemoView(request):
     params = {'max_like': max_like, 'min_like': min_like, 
                 'max_wish': max_wish, 'min_wish': min_wish, 
                 'max_exchange': max_exchange, 'min_exchange': min_exchange,
-                'matching_score': matching_score}
+                'matching_score': matching_score, 'max_like_cat': max_like_cat, 'max_wish_cat': max_wish_cat, 'max_exchange_cat': max_exchange_cat}
     
     return render(request, 'demo.html', params)
