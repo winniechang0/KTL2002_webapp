@@ -133,7 +133,9 @@ def HomeView(request):
     # d.Offer_provide = Offer_b
     # d.status = 0
     # d.save()
-    return render(request,'start.html')
+    cat = ProductCategory.objects.all()
+    params = {'result':cat}
+    return render(request,'start.html',params)
 
 def update_customer_preference(user, category):
     like_p = LikePreference()
@@ -332,7 +334,12 @@ def SearchPage(request):
             update_matching_score(request.user, product.Product_category_name)
 
     srh = request.GET['query']
-    products = ProductInfo.objects.filter(Product_title__icontains=srh).values_list('Product_asin', flat=True)
+    if request.POST.get('cat',False) == 0:
+        products = ProductInfo.objects.filter(Product_title__icontains=srh).values_list('Product_asin', flat=True)
+    else:
+        category = ProductCategory.objects.get(id = request.POST.get('cat',False))
+        products = ProductInfo.objects.filter(Product_title__icontains=srh, Product_category_name=category).values_list('Product_asin', flat=True)
+
     # for each in products:
     #     print(each)
     offer = Offer.objects.filter(Offer_asin__in = products)
